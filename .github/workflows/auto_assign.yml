@@ -3,14 +3,6 @@ on:
   pull_request:
     branches: [ master ]
 
-addAssignees: author
-addReviewers: true
-numberOfReviewers: 2
-reviewers:
-  - frankdekker
-  - bram123
-  - prinsfrank
-
 jobs:
   add-reviews:
     runs-on: ubuntu-latest
@@ -18,3 +10,4 @@ jobs:
       - uses: kentaro-m/auto-assign-action@v1.1.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          configuration-path: ".github/config/auto_assign.yml"
