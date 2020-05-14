@@ -5,6 +5,7 @@ on:
 
 addAssignees: author
 addReviewers: true
+numberOfReviewers: 2
 reviewers:
   - frankdekker
   - bram123
