@@ -18,11 +18,12 @@
         "phpstan/extension-installer": "1.0.*"
     },
     "scripts": {
-        "check": "composer run stan:check && composer run mess:check && composer run style:check && composer run test",
-        "stan:check": "phpstan analyse",
-        "mess:check": "phpmd src,tests text phpmd.xml.dist --suffixes=php",
-        "style:check": "phpcs src tests",
-        "style:fix": "phpcbf src tests",
+        "check": "composer run check:phpstan && composer run check:phpmd && composer run check:phpcs",
+        "check:phpstan": "phpstan analyse",
+        "check:phpmd": "phpmd src,tests text phpmd.xml.dist --suffixes=php",
+        "check:phpcs": "phpcs src tests",
+        "fix": "@fix:phpcbf",
+        "fix:phpcbf": "phpcbf src tests",
         "test": "phpunit",
         "test:integration": "phpunit --testsuite integration",
         "test:unit": "phpunit --testsuite unit"
