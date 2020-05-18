@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         php-versions: ['7.1', '7.2', '7.3']
+        requirements: ['', '--prefer-lowest --prefer-stable']
     steps:
     - uses: actions/checkout@v2
     - name: Setup PHP
@@ -22,7 +23,7 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: composer update --prefer-dist ${{ matrix.requirements }} --no-progress --no-suggest
     - name: Run test suite
       run: composer test
     - name: Run checks
