@@ -15,17 +15,17 @@ jobs:
         php-versions: ['7.1', '7.2', '7.3']
         composer-flags: ['', '--prefer-lowest']
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-versions }}
-    - name: Validate composer.json and composer.lock
-      run: composer validate
-    - name: Install dependencies
-      run: composer update --prefer-dist --no-progress --no-suggest --prefer-stable ${{ matrix.composer-flags }}
-    - name: Run test suite
-      run: composer test
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-suggest --prefer-stable ${{ matrix.composer-flags }}
+      - name: Run test suite
+        run: composer test
   quality:
     name: Quality checks
     runs-on: ubuntu-latest
