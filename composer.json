@@ -13,7 +13,6 @@
         "phpmd/phpmd": "@stable",
         "phpunit/phpunit": "7.5.*",
         "phpstan/phpstan-phpunit": "0.12.*",
-        "phpstan/phpstan-symfony": "0.12.*",
         "phpstan/phpstan-strict-rules": "0.12.*",
         "phpstan/extension-installer": "1.0.*"
     },
