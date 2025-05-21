@@ -36,7 +36,7 @@ jobs:
         run: composer update --prefer-dist --no-progress --no-suggest --prefer-stable ${{ matrix.composer-flags }}
 
       - name: Run test suite
-        run: composer test
+        run: composer test:unit
 
   coverage:
     name: PHP coverage
