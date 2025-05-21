@@ -41,6 +41,7 @@
     <rule ref="rulesets/codesize.xml">
         <exclude name="TooManyMethods"/>
         <exclude name="TooManyPublicMethods"/>
+        <exclude name="UnusedLocalVariable"/>
     </rule>
     <!-- exclude `function test*` from count -->
     <rule ref="rulesets/codesize.xml/TooManyMethods">
@@ -53,5 +54,19 @@
         <properties>
             <property name="ignorepattern" value="(^(set|get|test))"/>
         </properties>
+    </rule>
+    <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable">
+        <properties>
+            <property name="allow-unused-foreach-variables" value="true"/>
+        </properties>
+    </rule>
+
+    <!-- Clean Code rules -->
+    <rule ref="rulesets/cleancode.xml">
+        <exclude name="BooleanArgumentFlag"/>
+        <exclude name="StaticAccess"/>
+        <exclude name="ElseExpression"/>
+        <exclude name="UndefinedVariable"/>
+        <exclude name="ErrorControlOperator"/>
     </rule>
 </ruleset>
