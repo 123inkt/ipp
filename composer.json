@@ -26,10 +26,17 @@
         "slevomat/coding-standard": "^8.16"
     },
     "scripts": {
-        "baseline": ["@baseline:phpstan", "@baseline:phpmd"],
+        "baseline": [
+            "@baseline:phpstan",
+            "@baseline:phpmd"
+        ],
         "baseline:phpstan": "phpstan --generate-baseline",
         "baseline:phpmd": "phpmd src,tests xml phpmd.xml.dist --generate-baseline",
-        "check": ["@check:phpstan", "@check:phpmd", "@check:phpcs"],
+        "check": [
+            "@check:phpstan",
+            "@check:phpmd",
+            "@check:phpcs"
+        ],
         "check:phpstan": "phpstan analyse",
         "check:phpmd": "phpmd src,tests text phpmd.xml.dist --suffixes php",
         "check:phpcs": "phpcs src tests",
