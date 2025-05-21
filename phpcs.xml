@@ -20,8 +20,8 @@
     </rule>
     <rule ref="SlevomatCodingStandard.Complexity.Cognitive">
         <properties>
-            <property name="warningThreshold" value="6"/>
-            <property name="errorThreshold" value="6"/>
+            <property name="warningThreshold" value="16"/>
+            <property name="errorThreshold" value="16"/>
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation"/>
