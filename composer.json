@@ -25,7 +25,6 @@
         "digitalrevolution/accessorpair-constraint": "^v2.4.1",
         "digitalrevolution/phpunit-file-coverage-inspection": "^3.0",
         "digitalrevolution/php-codesniffer-baseline": "^1.1",
-        "digitalrevolution/pmd-gitlab-renderer": "^0.3.3",
         "phpmd/phpmd": "^2.12",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^1.9.1",
