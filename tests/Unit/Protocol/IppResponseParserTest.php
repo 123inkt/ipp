@@ -37,7 +37,7 @@ class IppResponseParserTest extends TestCase
         $parser = new IppResponseParser();
 
         /** @var CupsIppResponse $job */
-        $job    = $parser->getResponse((string)$response);
+        $job = $parser->getResponse((string)$response);
         static::assertSame(1, $job->getJobId());
         static::assertSame(JobStateEnum::Completed, $job->getJobState());
         static::assertSame('ok', $job->getStatusMessage());
