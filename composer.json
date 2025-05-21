@@ -51,12 +51,11 @@
         "check:phpcs": "phpcs src tests",
         "fix": "@fix:phpcbf",
         "fix:phpcbf": "phpcbf src tests",
-        "test": [
-            "@test:unit:coverage",
-            "@test:phpfci"
+        "test": "phpunit --testsuite unit",
+        "test:coverage": [
+            "phpunit --testsuite unit --coverage-clover coverage.xml",
+            "phpfci inspect coverage.xml --exit-code-on-failure"
         ],
-        "test:unit": "phpunit --testsuite unit",
-        "test:unit:coverage": "phpunit --testsuite unit --coverage-clover coverage.xml",
         "test:phpfci": "phpfci inspect coverage.xml --exit-code-on-failure"
     },
     "autoload": {
