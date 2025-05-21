@@ -65,4 +65,3 @@
 /php*.dist export-ignore
 /php*.neon export-ignore
 /renovate.json export-ignore
-/sonar-project.properties export-ignore

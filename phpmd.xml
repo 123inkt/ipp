@@ -4,44 +4,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
          xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
-
     <description>
         The Code Size Ruleset contains a collection of rules that find code size related problems.
     </description>
 
-    <!-- Clean Code rules -->
-    <rule ref="rulesets/cleancode.xml">
-        <exclude name="BooleanArgumentFlag"/>
-        <exclude name="StaticAccess"/>
-        <exclude name="ElseExpression"/>
-        <exclude name="UndefinedVariable"/>
-        <exclude name="ErrorControlOperator"/>
+    <rule ref="rulesets/controversial.xml"/>
+    <rule ref="rulesets/design.xml">
+        <exclude name="CouplingBetweenObjects" />
     </rule>
-
-    <!-- Code Size rules -->
-    <rule ref="rulesets/codesize.xml">
-        <exclude name="CyclomaticComplexity"/>
-        <exclude name="NPathComplexity"/>
-        <exclude name="TooManyPublicMethods"/>
-    </rule>
-    <rule ref="rulesets/codesize.xml/NPathComplexity">
+    <rule ref="rulesets/design.xml/CouplingBetweenObjects">
         <properties>
-            <property name="minimum" description="The npath reporting threshold" value="3500"/>
+            <property name="maximum" value="21"/>
         </properties>
     </rule>
-    <rule ref="rulesets/unusedcode.xml">
-        <exclude name="UnusedLocalVariable"/>
-    </rule>
-    <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable">
-        <properties>
-            <property name="allow-unused-foreach-variables" value="true"/>
-        </properties>
-    </rule>
-    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
-        <properties>
-            <property name="ignorepattern" value="(^(set|get|test))"/>
-        </properties>
-    </rule>
+    <rule ref="rulesets/unusedcode.xml"/>
 
     <!-- Naming rules -->
     <rule ref="rulesets/naming.xml">
@@ -51,7 +27,7 @@
     </rule>
     <rule ref="rulesets/naming.xml/ShortVariable">
         <properties>
-            <property name="exceptions" value="id,e,i,x,y,z"/>
+            <property name="exceptions" value="id,e,i,x,y,z" />
         </properties>
     </rule>
     <rule ref="rulesets/naming.xml/LongVariable">
@@ -62,16 +38,35 @@
         </properties>
     </rule>
 
-    <!-- Design rules -->
-    <rule ref="rulesets/design.xml">
-        <exclude name="EmptyCatchBlock"/>
-        <exclude name="CouplingBetweenObjects"/>
-        <exclude name="NumberOfChildren"/>
+    <rule ref="rulesets/codesize.xml">
+        <exclude name="TooManyMethods"/>
+        <exclude name="TooManyPublicMethods"/>
+        <exclude name="UnusedLocalVariable"/>
     </rule>
-    <rule ref="rulesets/design.xml/CouplingBetweenObjects">
+    <!-- exclude `function test*` from count -->
+    <rule ref="rulesets/codesize.xml/TooManyMethods">
         <properties>
-            <property name="maximum" value="21"/>
+            <property name="ignorepattern" value="(^(set|get|test))"/>
         </properties>
     </rule>
-    <rule ref="rulesets/controversial.xml"/>
+    <!-- exclude `function test*` from count -->
+    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
+        <properties>
+            <property name="ignorepattern" value="(^(set|get|test))"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable">
+        <properties>
+            <property name="allow-unused-foreach-variables" value="true"/>
+        </properties>
+    </rule>
+
+    <!-- Clean Code rules -->
+    <rule ref="rulesets/cleancode.xml">
+        <exclude name="BooleanArgumentFlag"/>
+        <exclude name="StaticAccess"/>
+        <exclude name="ElseExpression"/>
+        <exclude name="UndefinedVariable"/>
+        <exclude name="ErrorControlOperator"/>
+    </rule>
 </ruleset>
