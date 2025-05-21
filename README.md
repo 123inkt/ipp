@@ -13,7 +13,7 @@ composer require digitalrevolution/ipp
 ```php
     $server = new IppServer();
     $server->setUri('https://cups.local');
-    $server->setUserName('admin'); // optional
+    $server->setUsername('admin'); // optional
     $server->setPassword('admin'); // optional
 
     $ipp = new Ipp($server, new Psr18Client());
