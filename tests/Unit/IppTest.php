@@ -9,10 +9,9 @@ use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Ipp;
-use DR\Ipp\Operations\CupsCreatePrinter;
-use DR\Ipp\Operations\CupsDeletePrinter;
 use DR\Ipp\Operations\GetJobAttributesOperation;
 use DR\Ipp\Operations\PrintOperation;
+use DR\Ipp\Service\PrinterAdminService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -39,26 +38,12 @@ class IppTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function testCreatePrinter(): void
+    public function testPrinterAdministration(): void
     {
-        $printer = new IppPrinter();
+        $mock = $this->createMock(PrinterAdminService::class);
+        $this->setPrivateProperty($this->ipp, 'printerAdmin', $mock);
 
-        $mock = $this->createMock(CupsCreatePrinter::class);
-        $this->setPrivateProperty($this->ipp, 'cupsCreatePrinter', $mock);
-
-        $mock->expects($this->once())->method('create')->with($printer);
-        $this->ipp->createPrinter($printer);
-    }
-
-    public function testDeletePrinter(): void
-    {
-        $printer = new IppPrinter();
-
-        $mock = $this->createMock(CupsDeletePrinter::class);
-        $this->setPrivateProperty($this->ipp, 'cupsDeletePrinter', $mock);
-
-        $mock->expects($this->once())->method('delete')->with($printer);
-        $this->ipp->deletePrinter($printer);
+        static::assertSame($mock, $this->ipp->printerAdministration());
     }
 
     /**

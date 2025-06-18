@@ -2,32 +2,28 @@
 
 declare(strict_types=1);
 
-namespace DR\Ipp\Operations;
+namespace DR\Ipp\Operations\Cups;
 
+use DR\Ipp\Client\HttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
+use DR\Ipp\Operations\CreatePrinterInterface;
 use DR\Ipp\Protocol\IppAttribute;
 use DR\Ipp\Protocol\IppOperation;
-use DR\Ipp\Protocol\IppResponseParserInterface;
-use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
-use Psr\Http\Client\ClientInterface;
 
 /**
  * @internal
  */
-class CupsCreatePrinter
+class CupsCreatePrinter implements CreatePrinterInterface
 {
     public const IDLE = 0x03;
 
-    public function __construct(
-        private readonly IppServer $server,
-        private readonly ClientInterface $client,
-        private readonly IppResponseParserInterface $parser
-    ) {
+    public function __construct(private readonly IppServer $server, private readonly HttpClientInterface $client)
+    {
     }
 
     /**
@@ -49,18 +45,6 @@ class CupsCreatePrinter
         $operation->addPrinterAttribute(new IppAttribute(IppTypeEnum::Uri, 'device-uri', $printer->getDeviceUri()));
         $operation->addPrinterAttribute(new IppAttribute(IppTypeEnum::TextWithoutLang, 'printer-location', $printer->getLocation()));
 
-        $response = $this->client->sendRequest(
-            new Request(
-                'POST',
-                $this->server->getUri() . '/admin',
-                [
-                    'Content-Type'  => 'application/ipp',
-                    'Authorization' => 'Basic ' . base64_encode($this->server->getUsername() . ":" . $this->server->getPassword())
-                ],
-                (string)$operation
-            )
-        );
-
-        return $this->parser->getResponse($response->getBody()->getContents());
+        return $this->client->sendRequest($operation);
     }
 }

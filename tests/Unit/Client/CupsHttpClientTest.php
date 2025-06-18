@@ -1,0 +1,88 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DR\Ipp\Tests\Unit\Client;
+
+use DR\Ipp\Client\CupsHttpClient;
+use DR\Ipp\Entity\IppServer;
+use DR\Ipp\Enum\IppOperationEnum;
+use DR\Ipp\Protocol\IppOperation;
+use DR\Ipp\Protocol\IppResponseParser;
+use Nyholm\Psr7\Request;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Throwable;
+
+#[CoversClass(CupsHttpClient::class)]
+class CupsHttpClientTest extends TestCase
+{
+    /**
+     * @throws Throwable
+     */
+    public function testCupsRequest(): void
+    {
+        $server = $this->createMock(IppServer::class);
+        $server->expects($this->once())->method('getUri')->willReturn('https://cups');
+        $server->expects($this->once())->method('getUsername')->willReturn('unit');
+        $server->expects($this->once())->method('getPassword')->willReturn('test');
+
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects($this->once())->method('sendRequest')->with(static::callback(static function (Request $request) {
+            static::assertSame('POST', $request->getMethod());
+            static::assertSame('cups', $request->getUri()->getHost());
+            static::assertSame('/admin', $request->getUri()->getPath());
+            static::assertSame(
+                ['Host' => ['cups'], 'Content-Type' => ['application/ipp'], 'Authorization' => ['Basic dW5pdDp0ZXN0']],
+                $request->getHeaders()
+            );
+            static::assertSame('unittest', $request->getBody()->getContents());
+
+            return true;
+        }));
+
+        $parser = $this->createMock(IppResponseParser::class);
+        $parser->expects($this->once())->method('getResponse');
+        $client = new CupsHttpClient($server, $clientMock, $parser);
+
+        $operation = $this->createMock(IppOperation::class);
+        $operation->method('getOperation')->willReturn(IppOperationEnum::CupsAddModifyPrinter);
+        $operation->method('__toString')->willReturn('unittest');
+
+        $client->sendRequest($operation);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function testNormalRequest(): void
+    {
+        $server     = $this->createMock(IppServer::class);
+        $server->expects($this->once())->method('getUri')->willReturn('https://cups');
+
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects($this->once())->method('sendRequest')->with(static::callback(static function (Request $request) {
+            static::assertSame('POST', $request->getMethod());
+            static::assertSame('cups', $request->getUri()->getHost());
+            static::assertSame('', $request->getUri()->getPath());
+            static::assertSame(
+                ['Host' => ['cups'], 'Content-Type' => ['application/ipp']],
+                $request->getHeaders()
+            );
+            static::assertSame('unittest', $request->getBody()->getContents());
+
+            return true;
+        }));
+
+        $parser = $this->createMock(IppResponseParser::class);
+        $parser->expects($this->once())->method('getResponse');
+        $client = new CupsHttpClient($server, $clientMock, $parser);
+
+        $operation = $this->createMock(IppOperation::class);
+        $operation->method('getOperation')->willReturn(IppOperationEnum::PrintJob);
+        $operation->method('__toString')->willReturn('unittest');
+
+        $client->sendRequest($operation);
+    }
+}

@@ -4,24 +4,21 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit\Operations;
 
+use DR\Ipp\Client\HttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
-use DR\Ipp\Entity\Response\CupsIppResponse;
+use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\FileTypeEnum;
 use DR\Ipp\Enum\IppAttributeTypeEnum;
-use DR\Ipp\Enum\IppStatusCodeEnum;
+use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
-use DR\Ipp\Enum\JobStateEnum;
 use DR\Ipp\Operations\PrintOperation;
 use DR\Ipp\Protocol\IppAttribute;
-use DR\Ipp\Protocol\IppResponseParserInterface;
-use Nyholm\Psr7\Request;
+use DR\Ipp\Protocol\IppOperation;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Throwable;
 
@@ -37,37 +34,25 @@ class PrintOperationTest extends TestCase
         $server = new IppServer();
         $server->setUri($cups);
 
-        $client = $this->createMock(ClientInterface::class);
-        $parser = $this->createMock(IppResponseParserInterface::class);
-        $print  = new PrintOperation($server, $client, $parser);
+        $client = $this->createMock(HttpClientInterface::class);
+        $print  = new PrintOperation($server, $client);
 
         $fileData        = 'test';
         $responseContent = 'test';
 
         $body = $this->createMock(StreamInterface::class);
         $body->method('getContents')->willReturn($responseContent);
-        $response = $this->createMock(ResponseInterface::class);
-        $response->method('getBody')->willReturn($body);
+        $response = $this->createMock(IppResponseInterface::class);
 
-        $client->expects($this->once())->method('sendRequest')->with(static::callback(static function (Request $request) {
-            static::assertSame('POST', $request->getMethod());
-            static::assertSame('https://cups', $request->getUri()->__toString());
-            static::assertSame(
-                ['Host' => ['cups'], 'Content-Type' => ['application/ipp']],
-                $request->getHeaders()
-            );
+        $client->expects($this->once())->method('sendRequest')->with(static::callback(static function (IppOperation $operation) {
+            static::assertSame(IppOperationEnum::PrintJob, $operation->getOperation());
+            static::assertCount(4, $operation->getJobAttributes(), 'Job attribute count incorrect');
+            static::assertCount(0, $operation->getPrinterAttributes(), 'Printer attribute count incorrect');
+            static::assertCount(5, $operation->getOperationAttributes(), 'Operation attribute count incorrect');
+            static::assertNotEmpty($operation->getFileData());
 
             return true;
         }))->willReturn($response);
-
-        $attributes = [
-            'job-id'         => new IppAttribute(IppTypeEnum::Int, 'job-id', 12),
-            'job-state'      => new IppAttribute(IppTypeEnum::Enum, 'job-state', JobStateEnum::Failed->value),
-            'status-message' => new IppAttribute(IppTypeEnum::Keyword, 'status-message', 'test')
-        ];
-        $parser->method('getResponse')->with($responseContent)->willReturn(
-            new CupsIppResponse(IppStatusCodeEnum::Unknown, $attributes)
-        );
 
         $printer = new IppPrinter();
         $printer->setHostname('test');
@@ -79,11 +64,7 @@ class PrintOperationTest extends TestCase
         $file->addAttribute(IppAttributeTypeEnum::OperationAttribute, new IppAttribute(IppTypeEnum::Int, 'vendor-specific', 1));
         $file->addAttribute(IppAttributeTypeEnum::JobAttribute, new IppAttribute(IppTypeEnum::Int, 'vendor-specific', 2));
 
-        /** @var CupsIppResponse $job */
-        $job = $print->print($printer, $file);
-        static::assertSame(12, $job->getJobId());
-        static::assertSame('test', $job->getStatusMessage());
-        static::assertSame(JobStateEnum::Failed, $job->getJobState());
+        $print->print($printer, $file);
     }
 
     /**
@@ -95,9 +76,8 @@ class PrintOperationTest extends TestCase
         $cups   = 'https://cups';
         $server = new IppServer();
         $server->setUri($cups);
-        $client = $this->createMock(ClientInterface::class);
-        $parser = $this->createMock(IppResponseParserInterface::class);
-        $print  = new PrintOperation($server, $client, $parser);
+        $client = $this->createMock(HttpClientInterface::class);
+        $print  = new PrintOperation($server, $client);
         static::assertSame($expected, $print->fileTypeLookup($fileType));
     }
 

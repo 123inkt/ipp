@@ -31,6 +31,40 @@ class IppOperation
     ) {
     }
 
+    public function getOperation(): IppOperationEnum
+    {
+        return $this->operation;
+    }
+
+    /**
+     * @return IppAttribute[]
+     */
+    public function getOperationAttributes(): array
+    {
+        return $this->operationAttributes;
+    }
+
+    /**
+     * @return IppAttribute[]
+     */
+    public function getPrinterAttributes(): array
+    {
+        return $this->printerAttributes;
+    }
+
+    /**
+     * @return IppAttribute[]
+     */
+    public function getJobAttributes(): array
+    {
+        return $this->jobAttributes;
+    }
+
+    public function getFileData(): ?string
+    {
+        return $this->fileData;
+    }
+
     public function addOperationAttribute(IppAttribute $attribute): self
     {
         $this->operationAttributes[] = $attribute;

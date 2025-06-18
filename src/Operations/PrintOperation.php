@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Operations;
 
+use DR\Ipp\Client\HttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
@@ -14,10 +15,7 @@ use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Protocol\IppAttribute;
 use DR\Ipp\Protocol\IppOperation;
-use DR\Ipp\Protocol\IppResponseParserInterface;
-use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
-use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -28,11 +26,8 @@ class PrintOperation implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    public function __construct(
-        private readonly IppServer $server,
-        private readonly ClientInterface $client,
-        private readonly IppResponseParserInterface $parser
-    ) {
+    public function __construct(private readonly IppServer $server, private readonly HttpClientInterface $client)
+    {
     }
 
     /**
@@ -64,16 +59,7 @@ class PrintOperation implements LoggerAwareInterface
 
         $operation->setFileData($file->getData());
 
-        $response = $this->client->sendRequest(
-            new Request(
-                'POST',
-                $this->server->getUri(),
-                ['Content-Type' => 'application/ipp'],
-                (string)$operation
-            )
-        );
-
-        return $this->parser->getResponse($response->getBody()->getContents());
+        return $this->client->sendRequest($operation);
     }
 
     public function fileTypeLookup(FileTypeEnum $fileType): string
@@ -84,7 +70,7 @@ class PrintOperation implements LoggerAwareInterface
             FileTypeEnum::ZPL => 'application/octet-stream',
             FileTypeEnum::PS  => 'application/postscript',
             FileTypeEnum::JPG => 'image/jpeg',
-            FileTypeEnum::PNG => 'image/png'
+            FileTypeEnum::PNG => 'image/png',
         };
     }
 }
