@@ -13,6 +13,8 @@ use Nyholm\Psr7\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Throwable;
 
 #[CoversClass(CupsHttpClient::class)]
@@ -28,6 +30,9 @@ class CupsHttpClientTest extends TestCase
         $server->expects($this->once())->method('getUsername')->willReturn('unit');
         $server->expects($this->once())->method('getPassword')->willReturn('test');
 
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects($this->once())->method('getBody')->willReturn($this->createMock(StreamInterface::class));
+
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->once())->method('sendRequest')->with(static::callback(static function (Request $request) {
             static::assertSame('POST', $request->getMethod());
@@ -40,7 +45,7 @@ class CupsHttpClientTest extends TestCase
             static::assertSame('unittest', $request->getBody()->getContents());
 
             return true;
-        }));
+        }))->willReturn($response);
 
         $parser = $this->createMock(IppResponseParser::class);
         $parser->expects($this->once())->method('getResponse');
@@ -61,6 +66,9 @@ class CupsHttpClientTest extends TestCase
         $server     = $this->createMock(IppServer::class);
         $server->expects($this->once())->method('getUri')->willReturn('https://cups');
 
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects($this->once())->method('getBody')->willReturn($this->createMock(StreamInterface::class));
+
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->once())->method('sendRequest')->with(static::callback(static function (Request $request) {
             static::assertSame('POST', $request->getMethod());
@@ -73,7 +81,7 @@ class CupsHttpClientTest extends TestCase
             static::assertSame('unittest', $request->getBody()->getContents());
 
             return true;
-        }));
+        }))->willReturn($response);
 
         $parser = $this->createMock(IppResponseParser::class);
         $parser->expects($this->once())->method('getResponse');
