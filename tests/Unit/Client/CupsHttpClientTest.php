@@ -30,8 +30,10 @@ class CupsHttpClientTest extends TestCase
         $server->expects($this->once())->method('getUsername')->willReturn('unit');
         $server->expects($this->once())->method('getPassword')->willReturn('test');
 
+        $responseStream = $this->createMock(StreamInterface::class);
+        $responseStream->method('getContents')->willReturn('');
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->once())->method('getBody')->willReturn($this->createMock(StreamInterface::class));
+        $response->expects($this->once())->method('getBody')->willReturn($responseStream);
 
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->once())->method('sendRequest')->with(static::callback(static function (Request $request) {
@@ -66,8 +68,10 @@ class CupsHttpClientTest extends TestCase
         $server     = $this->createMock(IppServer::class);
         $server->expects($this->once())->method('getUri')->willReturn('https://cups');
 
+        $responseStream = $this->createMock(StreamInterface::class);
+        $responseStream->method('getContents')->willReturn('');
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->once())->method('getBody')->willReturn($this->createMock(StreamInterface::class));
+        $response->expects($this->once())->method('getBody')->willReturn($responseStream);
 
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->once())->method('sendRequest')->with(static::callback(static function (Request $request) {
