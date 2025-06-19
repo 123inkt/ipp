@@ -13,7 +13,7 @@ use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 
-class CupsHttpClient implements HttpClientInterface
+class CupsIppHttpClient implements IppHttpClientInterface
 {
     public function __construct(
         private readonly IppServer $server,

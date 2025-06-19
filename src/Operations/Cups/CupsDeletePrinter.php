@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Operations\Cups;
 
-use DR\Ipp\Client\HttpClientInterface;
+use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Entity\Response\IppResponseInterface;
@@ -20,7 +20,7 @@ use Psr\Http\Client\ClientExceptionInterface;
  */
 class CupsDeletePrinter implements DeletePrinterInterface
 {
-    public function __construct(private readonly IppServer $server, private readonly HttpClientInterface $client)
+    public function __construct(private readonly IppServer $server, private readonly IppHttpClientInterface $client)
     {
     }
 

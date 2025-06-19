@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Operations;
 
-use DR\Ipp\Client\HttpClientInterface;
+use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
@@ -17,7 +17,7 @@ use Psr\Http\Client\ClientExceptionInterface;
  */
 class GetJobAttributesOperation
 {
-    public function __construct(private readonly HttpClientInterface $client)
+    public function __construct(private readonly IppHttpClientInterface $client)
     {
     }
 

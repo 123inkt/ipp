@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Operations;
 
-use DR\Ipp\Client\HttpClientInterface;
+use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
@@ -26,7 +26,7 @@ class PrintOperation implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    public function __construct(private readonly IppServer $server, private readonly HttpClientInterface $client)
+    public function __construct(private readonly IppServer $server, private readonly IppHttpClientInterface $client)
     {
     }
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DR\Ipp;
 
-use DR\Ipp\Client\CupsHttpClient;
-use DR\Ipp\Client\HttpClientInterface;
+use DR\Ipp\Client\CupsIppHttpClient;
+use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
@@ -26,7 +26,7 @@ class Ipp implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private HttpClientInterface $httpClient;
+    private IppHttpClientInterface $httpClient;
     private PrintOperationFactory $printOperationFactory;
 
     private ?PrintOperation $printOperation = null;
@@ -34,9 +34,12 @@ class Ipp implements LoggerAwareInterface
 
     private ?PrinterAdminService $printerAdmin = null;
 
-    public function __construct(private readonly IppServer $server, private readonly ClientInterface $client, ?HttpClientInterface $httpClient = null)
-    {
-        $this->httpClient = $httpClient ?? new CupsHttpClient($this->server, $this->client, new IppResponseParser());
+    public function __construct(
+        private readonly IppServer $server,
+        private readonly ClientInterface $client,
+        ?IppHttpClientInterface $httpClient = null
+    ) {
+        $this->httpClient = $httpClient ?? new CupsIppHttpClient($this->server, $this->client, new IppResponseParser());
         $this->printOperationFactory = new PrintOperationFactory();
     }
 

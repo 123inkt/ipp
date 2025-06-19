@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit\Client;
 
-use DR\Ipp\Client\CupsHttpClient;
+use DR\Ipp\Client\CupsIppHttpClient;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Protocol\IppOperation;
@@ -17,7 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Throwable;
 
-#[CoversClass(CupsHttpClient::class)]
+#[CoversClass(CupsIppHttpClient::class)]
 class CupsHttpClientTest extends TestCase
 {
     /**
@@ -51,7 +51,7 @@ class CupsHttpClientTest extends TestCase
 
         $parser = $this->createMock(IppResponseParser::class);
         $parser->expects($this->once())->method('getResponse');
-        $client = new CupsHttpClient($server, $clientMock, $parser);
+        $client = new CupsIppHttpClient($server, $clientMock, $parser);
 
         $operation = $this->createMock(IppOperation::class);
         $operation->method('getOperation')->willReturn(IppOperationEnum::CupsAddModifyPrinter);
@@ -89,7 +89,7 @@ class CupsHttpClientTest extends TestCase
 
         $parser = $this->createMock(IppResponseParser::class);
         $parser->expects($this->once())->method('getResponse');
-        $client = new CupsHttpClient($server, $clientMock, $parser);
+        $client = new CupsIppHttpClient($server, $clientMock, $parser);
 
         $operation = $this->createMock(IppOperation::class);
         $operation->method('getOperation')->willReturn(IppOperationEnum::PrintJob);

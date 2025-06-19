@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit\Operations;
 
-use DR\Ipp\Client\HttpClientInterface;
+use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
@@ -27,7 +27,7 @@ class GetJobAttributesOperationTest extends TestCase
         $server = new IppServer();
         $server->setUri($cups);
 
-        $client          = $this->createMock(HttpClientInterface::class);
+        $client          = $this->createMock(IppHttpClientInterface::class);
         $print           = new GetJobAttributesOperation($client);
         $responseContent = 'test';
 

@@ -8,7 +8,7 @@ use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Protocol\IppOperation;
 use Psr\Http\Client\ClientExceptionInterface;
 
-interface HttpClientInterface
+interface IppHttpClientInterface
 {
     /**
      * @throws ClientExceptionInterface

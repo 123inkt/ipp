@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit\Operations\Cups;
 
-use DR\Ipp\Client\HttpClientInterface;
+use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Entity\Response\IppResponseInterface;
@@ -30,7 +30,7 @@ class CupsDeletePrinterTest extends TestCase
         $server->setUsername('admin');
         $server->setPassword('admin');
 
-        $client           = $this->createMock(HttpClientInterface::class);
+        $client           = $this->createMock(IppHttpClientInterface::class);
         $printerCreator   = new CupsDeletePrinter($server, $client);
         $responseContents = 'test';
 

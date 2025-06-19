@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit\Operations;
 
-use DR\Ipp\Client\HttpClientInterface;
+use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
@@ -34,7 +34,7 @@ class PrintOperationTest extends TestCase
         $server = new IppServer();
         $server->setUri($cups);
 
-        $client = $this->createMock(HttpClientInterface::class);
+        $client = $this->createMock(IppHttpClientInterface::class);
         $print  = new PrintOperation($server, $client);
 
         $fileData        = 'test';
@@ -76,7 +76,7 @@ class PrintOperationTest extends TestCase
         $cups   = 'https://cups';
         $server = new IppServer();
         $server->setUri($cups);
-        $client = $this->createMock(HttpClientInterface::class);
+        $client = $this->createMock(IppHttpClientInterface::class);
         $print  = new PrintOperation($server, $client);
         static::assertSame($expected, $print->fileTypeLookup($fileType));
     }
