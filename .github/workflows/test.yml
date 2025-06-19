@@ -18,7 +18,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php-versions: [ '8.1', '8.2', '8.3', '8.4' ]
+                php-versions: [ '8.3', '8.4' ]
                 composer-flags: [ '', '--prefer-lowest' ]
         steps:
             -   uses: actions/checkout@v4
@@ -46,17 +46,17 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: 8.2
+                    php-version: 8.3
                     coverage: pcov
 
             -   name: Install dependencies
                 run: composer update --prefer-dist --no-progress --no-suggest --prefer-stable
 
             -   name: Run test suite
-                run: php -dpcov.enabled=1 -dpcov.exclude="~vendor~" vendor/bin/phpunit --testsuite unit --coverage-clover ./.coverage/coverage.xml
+                run: php -dpcov.enabled=1 -dpcov.exclude="~vendor~" vendor/bin/phpunit --testsuite unit --coverage-clover ./coverage.xml
 
             -   name: Check coverage
-                run: test ! -f ./.coverage/coverage.xml || php vendor/bin/phpfci inspect ./.coverage/coverage.xml ./.coverage/phpfci.xml --exit-code-on-failure
+                run: test ! -f ./.coverage/coverage.xml || php vendor/bin/phpfci inspect ./coverage.xml ./phpfci.xml --exit-code-on-failure
 
     quality:
         name: Quality checks
@@ -67,7 +67,7 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: 8.1
+                    php-version: 8.3
                     coverage: none
 
             -   name: Install dependencies
