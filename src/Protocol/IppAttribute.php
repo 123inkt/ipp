@@ -43,7 +43,7 @@ class IppAttribute
         } elseif ($this->type === IppTypeEnum::Bool) {
             $binary .= pack('n', 1) . pack('c', (int)Assert::boolean($this->value));
         } else {
-            $binary .= pack('n', strlen(Assert::string($this->value))) . $this->value;
+            $binary .= pack('n', strlen(Assert::string($this->value))) . Assert::string($this->value);
         }
 
         return $binary;

@@ -94,6 +94,7 @@ class IppResponseParser implements IppResponseParserInterface
     private function unpackDateTime(string $response): DateTime
     {
         // Datetime in rfc2579 format: https://datatracker.ietf.org/doc/html/rfc2579
+        /** @var array{year: int, month: int, day: int, hour: int, min: int, sec: int, int, tz: string, tzhour:int, tzmin: int}|false $dateTime */
         $dateTime = @unpack('nyear/cmonth/cday/chour/cmin/csec/c/atz/ctzhour/ctzmin', $response);
         if ($dateTime === false) {
             throw new RuntimeException('Failed to unpack IPP datetime');
@@ -113,7 +114,7 @@ class IppResponseParser implements IppResponseParserInterface
     private function unpack(string $unpack, string $string): string|int
     {
         $data = @unpack($unpack, $string);
-        if ($data === false || isset($data[1]) === false) {
+        if ($data === false || isset($data[1]) === false || (is_string($data[1]) === false && is_int($data[1]) === false)) {
             throw new RuntimeException();
         }
 
