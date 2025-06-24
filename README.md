@@ -2,6 +2,8 @@
 
 # Digitalrevolution IPP library
 
+A library to aid using the [ipp protocol](https://datatracker.ietf.org/doc/html/rfc8010/) in php, for example to send print jobs to print servers that support the protocol
+
 ## Installation
 
 ```bash
@@ -48,7 +50,7 @@ composer require digitalrevolution/ipp
     $printer->setDeviceUri('my.uri');
     $printer->setLocation('location');
 
-    $ipp->createPrinter($printer);
+    $ipp->printerAdministration()->createPrinter($printer);
 ```
 
 ### Delete a printer
@@ -57,7 +59,7 @@ composer require digitalrevolution/ipp
     $printer = new IppPrinter();
     $printer->setHostname('my.printer');
 
-    $ipp->deletePrinter($printer);
+    $ipp->printerAdministration()->deletePrinter($printer);
 ```
 
 ### Contributing
