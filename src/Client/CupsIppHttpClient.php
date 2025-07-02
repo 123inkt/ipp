@@ -15,6 +15,8 @@ use Psr\Http\Client\ClientInterface;
 
 class CupsIppHttpClient implements IppHttpClientInterface
 {
+    private const int HTTP_STATUS_SERVER_ERROR = 500;
+
     public function __construct(
         private readonly IppServer $server,
         private readonly ClientInterface $client,
@@ -31,26 +33,29 @@ class CupsIppHttpClient implements IppHttpClientInterface
     public function sendRequest(IppOperation $operation): IppResponseInterface
     {
         if ($operation->getOperation()->value >= IppOperationEnum::CupsGetDefault->value) {
-            $response = $this->client->sendRequest(
-                new Request(
-                    'POST',
-                    $this->server->getUri() . '/admin',
-                    [
-                        'Content-Type'  => 'application/ipp',
-                        'Authorization' => 'Basic ' . base64_encode($this->server->getUsername() . ":" . $this->server->getPassword())
-                    ],
-                    (string)$operation
-                )
+            $request = new Request(
+                'POST',
+                $this->server->getUri() . '/admin',
+                [
+                    'Content-Type'  => 'application/ipp',
+                    'Authorization' => 'Basic ' . base64_encode($this->server->getUsername() . ":" . $this->server->getPassword())
+                ],
+                (string)$operation
             );
         } else {
-            $response = $this->client->sendRequest(
-                new Request(
-                    'POST',
-                    $this->server->getUri(),
-                    ['Content-Type' => 'application/ipp'],
-                    (string)$operation
-                )
+            $request = new Request(
+                'POST',
+                $this->server->getUri(),
+                ['Content-Type' => 'application/ipp'],
+                (string)$operation
             );
+        }
+
+        $response = $this->client->sendRequest($request);
+
+        // a server error won't be an ipp response we can parse.
+        if ($response->getStatusCode() >= self::HTTP_STATUS_SERVER_ERROR) {
+            throw new IppRequestException($request, $response);
         }
 
         return $this->parser->getResponse($response->getBody()->getContents());

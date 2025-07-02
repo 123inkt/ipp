@@ -74,20 +74,20 @@ Then adding any Job, Printer or Operation Attributes as required by your standar
 Finally sending the request and parsing the response using the standard parser.
 
 ```php
-public function myOperation(): IppResponseInterface
-    $operation = new IppOperation(IppOperationEnum::OperationType);
-    $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Charset, 'attributes-charset', 'utf-8'));
+class MyOperation
+{
+    public function __construct(private readonly IppHttpClientInterface $client)
+    {
+    }
     
-    $response = $this->client->sendRequest(
-        new Request(
-            'POST',
-            $this->server->getUri(),
-            ['Content-Type' => 'application/ipp'],
-            (string)$operation
-        )
-    );
-
-    return $this->parser->getResponse($response->getBody()->getContents());
+    public function myOperation(): IppResponseInterface
+        $operation = new IppOperation(IppOperationEnum::OperationType);
+        $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Charset, 'attributes-charset', 'utf-8'));
+        
+        // set your attributes
+        
+        return $this->client->sendRequest($operation);
+    }
 }
 ```
 
