@@ -43,6 +43,7 @@ class CupsDeletePrinterTest extends TestCase
             static::assertCount(0, $operation->getJobAttributes(), 'Job attribute count incorrect');
             static::assertCount(0, $operation->getPrinterAttributes(), 'Printer attribute count incorrect');
             static::assertCount(3, $operation->getOperationAttributes(), 'Operation attribute count incorrect');
+
             return true;
         }))->willReturn($response);
 

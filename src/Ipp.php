@@ -37,9 +37,9 @@ class Ipp implements LoggerAwareInterface
     public function __construct(
         private readonly IppServer $server,
         private readonly ClientInterface $client,
-        ?IppHttpClientInterface $httpClient = null
+        ?IppHttpClientInterface $httpClient = null,
     ) {
-        $this->httpClient = $httpClient ?? new CupsIppHttpClient($this->server, $this->client, new IppResponseParser());
+        $this->httpClient            = $httpClient ?? new CupsIppHttpClient($this->server, $this->client, new IppResponseParser());
         $this->printOperationFactory = new PrintOperationFactory();
     }
 
@@ -47,7 +47,7 @@ class Ipp implements LoggerAwareInterface
     {
         $this->printerAdmin ??= new PrinterAdminService(
             new CupsCreatePrinter($this->server, $this->httpClient),
-            new CupsDeletePrinter($this->server, $this->httpClient)
+            new CupsDeletePrinter($this->server, $this->httpClient),
         );
 
         return $this->printerAdmin;

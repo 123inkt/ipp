@@ -251,9 +251,9 @@
             <property name="includeWhitespace" value="false"/>
         </properties>
     </rule>
-    <rule ref="SlevomatCodingStandard.Functions.DisallowTrailingCommaInCall"/>
-    <rule ref="SlevomatCodingStandard.Functions.DisallowTrailingCommaInDeclaration"/>
-    <rule ref="SlevomatCodingStandard.Functions.DisallowTrailingCommaInClosureUse"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInClosureUse"/>
     <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses"/>
     <rule ref="SlevomatCodingStandard.Namespaces.DisallowGroupUse"/>
     <rule ref="SlevomatCodingStandard.Namespaces.MultipleUsesPerLine"/>

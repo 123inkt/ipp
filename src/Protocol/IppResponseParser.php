@@ -28,7 +28,7 @@ class IppResponseParser implements IppResponseParserInterface
         $attributesTags = [
             IppOperationTagEnum::JobAttributeStart->value,
             IppOperationTagEnum::PrinterAttributeStart->value,
-            IppOperationTagEnum::UnsupportedAttributes->value
+            IppOperationTagEnum::UnsupportedAttributes->value,
         ];
         $attributes     = [];
         while ($this->unpack('c', $response) !== IppOperationTagEnum::AttributeEnd->value) {
@@ -62,7 +62,7 @@ class IppResponseParser implements IppResponseParserInterface
         [$attrValue, $response] = $this->consume(
             $response,
             $valueLength,
-            IppTypeEnum::tryFrom($type)
+            IppTypeEnum::tryFrom($type),
         );
 
         return [new IppAttribute(IppTypeEnum::tryFrom($type) ?? IppTypeEnum::Int, $attrName, $attrValue), $response];

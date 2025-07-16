@@ -43,7 +43,7 @@ class CupsIppHttpClientTest extends TestCase
             static::assertSame('/admin', $request->getUri()->getPath());
             static::assertSame(
                 ['Host' => ['cups'], 'Content-Type' => ['application/ipp'], 'Authorization' => ['Basic dW5pdDp0ZXN0']],
-                $request->getHeaders()
+                $request->getHeaders(),
             );
             static::assertSame('unittest', $request->getBody()->getContents());
 
@@ -81,7 +81,7 @@ class CupsIppHttpClientTest extends TestCase
             static::assertSame('', $request->getUri()->getPath());
             static::assertSame(
                 ['Host' => ['cups'], 'Content-Type' => ['application/ipp']],
-                $request->getHeaders()
+                $request->getHeaders(),
             );
             static::assertSame('unittest', $request->getBody()->getContents());
 
