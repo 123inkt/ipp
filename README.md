@@ -63,11 +63,6 @@ composer require digitalrevolution/ipp
     $ipp->printerAdministration()->deletePrinter($printer);
 ```
 
-### Contributing
-
-See [contributing.md](./CONTRIBUTING.md)  
-Pull requests welcome for adding standard IPP Operations
-
 ### Creating a custom IPP operation
 
 This project is created to be easily extensible, adding a new IPP operation is as simple as making sure it has an identifier in IppOperationEnum  
@@ -91,6 +86,11 @@ class MyOperation
     }
 }
 ```
+
+### Contributing
+
+See [contributing.md](./CONTRIBUTING.md)  
+Pull requests welcome for adding standard IPP Operations
 
 ## About us
 
