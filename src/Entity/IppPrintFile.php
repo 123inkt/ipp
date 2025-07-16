@@ -21,7 +21,7 @@ class IppPrintFile
         private string $data,
         private FileTypeEnum $fileType,
         private ?string $fileName = null,
-        private int $numberOfCopies = 1
+        private int $numberOfCopies = 1,
     ) {
     }
 

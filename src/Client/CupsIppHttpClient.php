@@ -20,7 +20,7 @@ class CupsIppHttpClient implements IppHttpClientInterface
     public function __construct(
         private readonly IppServer $server,
         private readonly ClientInterface $client,
-        private readonly IppResponseParserInterface $parser
+        private readonly IppResponseParserInterface $parser,
     ) {
     }
 
@@ -38,16 +38,16 @@ class CupsIppHttpClient implements IppHttpClientInterface
                 $this->server->getUri() . '/admin',
                 [
                     'Content-Type'  => 'application/ipp',
-                    'Authorization' => 'Basic ' . base64_encode($this->server->getUsername() . ":" . $this->server->getPassword())
+                    'Authorization' => 'Basic ' . base64_encode($this->server->getUsername() . ":" . $this->server->getPassword()),
                 ],
-                (string)$operation
+                (string)$operation,
             );
         } else {
             $request = new Request(
                 'POST',
                 $this->server->getUri(),
                 ['Content-Type' => 'application/ipp'],
-                (string)$operation
+                (string)$operation,
             );
         }
 

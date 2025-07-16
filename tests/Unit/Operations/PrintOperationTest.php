@@ -92,7 +92,7 @@ class PrintOperationTest extends TestCase
             [FileTypeEnum::ZPL, 'application/octet-stream'],
             [FileTypeEnum::PS, 'application/postscript'],
             [FileTypeEnum::JPG, 'image/jpeg'],
-            [FileTypeEnum::PNG, 'image/png']
+            [FileTypeEnum::PNG, 'image/png'],
         ];
     }
 }

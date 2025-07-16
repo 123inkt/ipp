@@ -1,8 +1,9 @@
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.3-8892BF)](https://php.net/)  
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.3-8892BF)](https://php.net/)
 
 # Digitalrevolution IPP library
 
-A library to aid using the [ipp protocol](https://datatracker.ietf.org/doc/html/rfc8010/) in php, for example to send print jobs to print servers that support the protocol
+A library to aid using the [ipp protocol](https://datatracker.ietf.org/doc/html/rfc8010/) in php, for example to send print jobs to print servers that
+support the protocol
 
 ## Installation
 
@@ -62,11 +63,6 @@ composer require digitalrevolution/ipp
     $ipp->printerAdministration()->deletePrinter($printer);
 ```
 
-### Contributing
-
-See [contributing.md](./CONTRIBUTING.md)  
-Pull requests welcome for adding standard IPP Operations
-
 ### Creating a custom IPP operation
 
 This project is created to be easily extensible, adding a new IPP operation is as simple as making sure it has an identifier in IppOperationEnum  
@@ -90,6 +86,11 @@ class MyOperation
     }
 }
 ```
+
+### Contributing
+
+See [contributing.md](./CONTRIBUTING.md)  
+Pull requests welcome for adding standard IPP Operations
 
 ## About us
 

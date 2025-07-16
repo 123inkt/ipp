@@ -27,7 +27,7 @@ class IppOperation
     public function __construct(
         private readonly IppOperationEnum $operation,
         private readonly string $version = '2.0',
-        private readonly int $requestId = 1
+        private readonly int $requestId = 1,
     ) {
     }
 

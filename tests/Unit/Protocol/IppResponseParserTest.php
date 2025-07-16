@@ -57,7 +57,7 @@ class IppResponseParserTest extends TestCase
         static::assertEquals(new IppAttribute(IppTypeEnum::Charset, 'attributes-charset', 'utf-8'), $attr['attributes-charset']);
         static::assertEquals(
             new IppAttribute(IppTypeEnum::NaturalLanguage, 'attributes-natural-language', 'en'),
-            $attr['attributes-natural-language']
+            $attr['attributes-natural-language'],
         );
         static::assertEquals(new IppAttribute(IppTypeEnum::Int, 'job-id', 1), $attr['job-id']);
         static::assertEquals(new IppAttribute(IppTypeEnum::Enum, 'job-state', 9), $attr['job-state']);
@@ -65,7 +65,7 @@ class IppResponseParserTest extends TestCase
         static::assertEquals(new IppAttribute(IppTypeEnum::Keyword, 'status-message', 'ok'), $attr['status-message']);
         static::assertEquals(
             new IppAttribute(IppTypeEnum::DateTime, 'date', DateTime::createFromFormat('Y-m-d H:i:sO', '2024-04-10 01:01:01+0000')),
-            $attr['date']
+            $attr['date'],
         );
     }
 

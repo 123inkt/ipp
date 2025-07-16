@@ -15,7 +15,7 @@ class IppRequestException extends Exception implements RequestExceptionInterface
     {
         parent::__construct(
             $this->response->getStatusCode() . ' (' . $this->response->getReasonPhrase() . '): ' . $this->response->getBody(),
-            $this->response->getStatusCode()
+            $this->response->getStatusCode(),
         );
     }
 

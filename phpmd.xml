@@ -10,7 +10,7 @@
 
     <rule ref="rulesets/controversial.xml"/>
     <rule ref="rulesets/design.xml">
-        <exclude name="CouplingBetweenObjects" />
+        <exclude name="CouplingBetweenObjects"/>
     </rule>
     <rule ref="rulesets/design.xml/CouplingBetweenObjects">
         <properties>
@@ -27,7 +27,7 @@
     </rule>
     <rule ref="rulesets/naming.xml/ShortVariable">
         <properties>
-            <property name="exceptions" value="id,e,i,x,y,z" />
+            <property name="exceptions" value="id,e,i,x,y,z"/>
         </properties>
     </rule>
     <rule ref="rulesets/naming.xml/LongVariable">
