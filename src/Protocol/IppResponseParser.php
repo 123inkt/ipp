@@ -18,6 +18,8 @@ use RuntimeException;
  */
 class IppResponseParser implements IppResponseParserInterface
 {
+    private IppAttribute $lastAttribute;
+
     public function getResponse(string $response): IppResponseInterface
     {
         [, $response] = $this->consume($response, 2, IppTypeEnum::Int);            // version   0x0101
@@ -55,18 +57,36 @@ class IppResponseParser implements IppResponseParserInterface
         /** @var int $type */
         [$type, $response] = $this->consume($response, 1, null);
         [$nameLength, $response] = $this->consume($response, 2, IppTypeEnum::Int);
+        if ($nameLength === 0x0000) {
+            // additional value
+            [$attrValue, $response] = $this->getAttributeValue($type, $response);
+            $this->lastAttribute->addAdditionalValue($attrValue);
+
+            return [$this->lastAttribute, $response];
+        }
         /** @var int $nameLength */
         [$attrName, $response] = $this->consume($response, $nameLength, IppTypeEnum::NameWithoutLang);
         /** @var string $attrName */
+        [$attrValue, $response] = $this->getAttributeValue($type, $response);
+
+        $this->lastAttribute = new IppAttribute(IppTypeEnum::tryFrom($type) ?? IppTypeEnum::Int, $attrName, $attrValue);
+
+        return [$this->lastAttribute, $response];
+    }
+
+    /**
+     * @return array{mixed, string}
+     */
+    private function getAttributeValue(int $type, string $response): array
+    {
         [$valueLength, $response] = $this->consume($response, 2, IppTypeEnum::Int);
+
         /** @var int $valueLength */
-        [$attrValue, $response] = $this->consume(
+        return $this->consume(
             $response,
             $valueLength,
             IppTypeEnum::tryFrom($type),
         );
-
-        return [new IppAttribute(IppTypeEnum::tryFrom($type) ?? IppTypeEnum::Int, $attrName, $attrValue), $response];
     }
 
     /**
@@ -87,9 +107,9 @@ class IppResponseParser implements IppResponseParserInterface
             case IppTypeEnum::Resolution:
                 return [$this->unpackResolution($response), substr($response, $length)];
             case IppTypeEnum::Bool:
-                return [(bool)$this->unpack('a1', $response), substr($response, $length)];
+                return [(bool)$this->unpack('a', $response), substr($response, $length)];
             case IppTypeEnum::IntRange:
-                return [[$this->unpack('N', $response), $this->unpack('N', substr($response, 4, 4))], substr($response, $length)];
+                return [$this->unpackIntRange($response), substr($response, $length)];
             case null:
                 $unpack = 'c' . $length;
                 break;
@@ -98,6 +118,14 @@ class IppResponseParser implements IppResponseParserInterface
         }
 
         return [$this->unpack($unpack, $response), substr($response, $length)];
+    }
+
+    /**
+     * @return int[]
+     */
+    private function unpackIntRange(string $response): array
+    {
+        return [(int)$this->unpack('N', $response), (int)$this->unpack('N', substr($response, 4, 4))];
     }
 
     private function unpackResolution(string $response): IppResolution
