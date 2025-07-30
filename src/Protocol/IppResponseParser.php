@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DR\Ipp\Protocol;
 
 use DateTime;
-use DR\Ipp\Entity\IppResolution;
 use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationTagEnum;
@@ -20,6 +19,9 @@ class IppResponseParser implements IppResponseParserInterface
 {
     private IppAttribute $lastAttribute;
 
+    /**
+     * @see https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1
+     */
     public function getResponse(string $response): IppResponseInterface
     {
         [, $response] = $this->consume($response, 2, IppTypeEnum::Int);            // version   0x0101
@@ -56,20 +58,23 @@ class IppResponseParser implements IppResponseParserInterface
     {
         /** @var int $type */
         [$type, $response] = $this->consume($response, 1, null);
+        $attrType = IppTypeEnum::tryFrom($type);
+
         [$nameLength, $response] = $this->consume($response, 2, IppTypeEnum::Int);
+        // Additional value https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1.5
         if ($nameLength === 0x0000) {
-            // additional value
-            [$attrValue, $response] = $this->getAttributeValue($type, $response);
+            [$attrValue, $response] = $this->getAttributeValue($attrType, $response);
             $this->lastAttribute->addAdditionalValue($attrValue);
 
             return [$this->lastAttribute, $response];
         }
+
         /** @var int $nameLength */
         [$attrName, $response] = $this->consume($response, $nameLength, IppTypeEnum::NameWithoutLang);
         /** @var string $attrName */
-        [$attrValue, $response] = $this->getAttributeValue($type, $response);
+        [$attrValue, $response] = $this->getAttributeValue($attrType, $response);
 
-        $this->lastAttribute = new IppAttribute(IppTypeEnum::tryFrom($type) ?? IppTypeEnum::Int, $attrName, $attrValue);
+        $this->lastAttribute = new IppAttribute($attrType ?? IppTypeEnum::Int, $attrName, $attrValue);
 
         return [$this->lastAttribute, $response];
     }
@@ -77,21 +82,21 @@ class IppResponseParser implements IppResponseParserInterface
     /**
      * @return array{mixed, string}
      */
-    private function getAttributeValue(int $type, string $response): array
+    private function getAttributeValue(?IppTypeEnum $type, string $response): array
     {
+        if ($type === IppTypeEnum::Collection) {
+            return $this->consumeCollection($response);
+        }
+
         [$valueLength, $response] = $this->consume($response, 2, IppTypeEnum::Int);
 
         /** @var int $valueLength */
-        return $this->consume(
-            $response,
-            $valueLength,
-            IppTypeEnum::tryFrom($type),
-        );
+        return $this->consume($response, $valueLength, $type);
     }
 
     /**
      * Decodes part of a binary string, and returns the decoded value and the rest of the binary string
-     * @return array{bool|int|string|int[]|DateTime|IppResolution, string}
+     * @return array{bool|int|string|int[]|DateTime|IppResolution|IppCollection, string}
      */
     private function consume(string $response, int $length, ?IppTypeEnum $type): array
     {
@@ -118,6 +123,31 @@ class IppResponseParser implements IppResponseParserInterface
         }
 
         return [$this->unpack($unpack, $response), substr($response, $length)];
+    }
+
+    /**
+     * @see https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1.6
+     * @return array{IppCollection, string}
+     */
+    private function consumeCollection(string $response): array
+    {
+        $collection = new IppCollection();
+        //https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1.7
+        [, $response] = $this->consume($response, 2, null); // 0x0000
+
+        while ($this->unpack('c', $response) !== IppTypeEnum::EndCollection->value) {
+            [, $response] = $this->consume($response, 3, null); // 0x4a 0x00 0x00
+            [$name, $response] = $this->getAttributeValue(IppTypeEnum::MemberAttributeName, $response);
+            [$valueType, $response] = $this->consume($response, 1, null);
+            [, $response] = $this->consume($response, 2, null); // 0x00 0x00
+            [$valueLength, $response] = $this->consume($response, 2, IppTypeEnum::Int);
+            [$value, $response] = $this->consume($response, $valueLength, IppTypeEnum::tryFrom($valueType));
+            $collection->add($name, $value);
+        }
+
+        [, $response] = $this->consume($response, 5, null); // 0x37 0x00 0x00 0x00 0x00
+
+        return [$collection, $response];
     }
 
     /**
