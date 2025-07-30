@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DR\Ipp\Protocol;
 
 use DateTime;
+use DR\Ipp\Entity\IppResolution;
 use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationTagEnum;
@@ -70,7 +71,7 @@ class IppResponseParser implements IppResponseParserInterface
 
     /**
      * Decodes part of a binary string, and returns the decoded value and the rest of the binary string
-     * @return array{int|string|DateTime, string}
+     * @return array{bool|int|string|int[]|DateTime|IppResolution, string}
      */
     private function consume(string $response, int $length, ?IppTypeEnum $type): array
     {
@@ -81,6 +82,14 @@ class IppResponseParser implements IppResponseParserInterface
                 break;
             case IppTypeEnum::DateTime:
                 return [$this->unpackDateTime($response), substr($response, $length)];
+            case IppTypeEnum::NoValue:
+                return ['', $response];
+            case IppTypeEnum::Resolution:
+                return [$this->unpackResolution($response), substr($response, $length)];
+            case IppTypeEnum::Bool:
+                return [(bool)$this->unpack('a1', $response), substr($response, $length)];
+            case IppTypeEnum::IntRange:
+                return [[$this->unpack('N', $response), $this->unpack('N', substr($response, 4, 4))], substr($response, $length)];
             case null:
                 $unpack = 'c' . $length;
                 break;
@@ -89,6 +98,17 @@ class IppResponseParser implements IppResponseParserInterface
         }
 
         return [$this->unpack($unpack, $response), substr($response, $length)];
+    }
+
+    private function unpackResolution(string $response): IppResolution
+    {
+        /** @var array{cross: int, feed: int, unit: int} $data */
+        $data = @unpack('Ncross/Nfeed/cunit', $response);
+        if ($data === false) {
+            throw new RuntimeException('Failed to unpack IPP resolution');
+        }
+
+        return new IppResolution($data['cross'], $data['feed'], $data['unit']);
     }
 
     private function unpackDateTime(string $response): DateTime
