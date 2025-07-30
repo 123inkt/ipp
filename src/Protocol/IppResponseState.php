@@ -19,7 +19,8 @@ class IppResponseState
 
     public function getNextByte(): int
     {
-        return (int)$this->unpackSingleValue('c');
+        /** @phpstan-return int */
+        return $this->unpackSingleValue('c');
     }
 
     /**
@@ -82,7 +83,7 @@ class IppResponseState
     private function consumeResolution(): IppResolution
     {
         /** @var array{cross: int, feed: int, unit: int} $data */
-        $data = $this->consumeBytes('Ncross/Nfeed/cunit', 5);
+        $data = $this->consumeBytes('Ncross/Nfeed/cunit', 9);
 
         return new IppResolution($data['cross'], $data['feed'], $data['unit']);
     }
