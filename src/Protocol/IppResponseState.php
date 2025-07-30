@@ -75,7 +75,7 @@ class IppResponseState
     private function consumeIntRange(): array
     {
         /** @var array{start: int, end: int} $data */
-        $data = $this->consumeBytes('Nstart/Nend', 4);
+        $data = $this->consumeBytes('Nstart/Nend', 8);
 
         return [(int)$data['start'], (int)$data['end']];
     }
