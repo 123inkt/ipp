@@ -32,6 +32,7 @@ class Ipp implements LoggerAwareInterface
 
     private ?PrintOperation $printOperation = null;
     private ?GetJobAttributesOperation $getJobAttributes = null;
+    private ?GetPrinterAttributesOperation $getPrinterAttributes = null;
 
     private ?PrinterAdminService $printerAdmin = null;
 
@@ -74,8 +75,10 @@ class Ipp implements LoggerAwareInterface
         return $this->getJobAttributes->getJob($jobUri);
     }
 
-    public function getPrinterAttributes(IppPrinter $printer): IppResponseInterface {
-        $a = new GetPrinterAttributesOperation($this->server, $this->httpClient);
-        return $a->getAttributes($printer);
+    public function getPrinterAttributes(IppPrinter $printer): IppResponseInterface
+    {
+        $this->getPrinterAttributes ??= new GetPrinterAttributesOperation($this->server, $this->httpClient);
+
+        return $this->getPrinterAttributes->getAttributes($printer);
     }
 }
