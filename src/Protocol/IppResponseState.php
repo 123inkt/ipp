@@ -30,11 +30,11 @@ class IppResponseState
     {
         return match ($type) {
             IppTypeEnum::Int, IppTypeEnum::Enum => $this->consumeBytes($length === 2 ? 'n' : 'N', $length),
-            IppTypeEnum::DateTime               => $this->consumeDateTime(),
-            IppTypeEnum::NoValue                => '',
-            IppTypeEnum::Resolution             => $this->consumeResolution(),
-            IppTypeEnum::Bool                   => (bool)$this->consumeBytes('a', 1),
-            IppTypeEnum::IntRange               => $this->consumeIntRange(),
+            IppTypeEnum::DateTime               => $this->consumeDateTime($length),
+            IppTypeEnum::NoValue                => null,
+            IppTypeEnum::Resolution             => $this->consumeResolution($length),
+            IppTypeEnum::Bool                   => (bool)$this->consumeBytes('a', $length),
+            IppTypeEnum::IntRange               => $this->consumeIntRange($length),
             null                                => $this->consumeBytes('c' . $length, $length),
             default                             => $this->consumeBytes('a' . $length, $length),
         };
@@ -51,11 +51,11 @@ class IppResponseState
         return $data;
     }
 
-    private function consumeDateTime(): DateTime
+    private function consumeDateTime(int $length): DateTime
     {
         // Datetime in rfc2579 format: https://datatracker.ietf.org/doc/html/rfc2579
         /** @var array{year: int, month: int, day: int, hour: int, min: int, sec: int, int, tz: string, tzhour:int, tzmin: int}|false $dateTime */
-        $dateTime = $this->consumeBytes('nyear/cmonth/cday/chour/cmin/csec/c/atz/ctzhour/ctzmin', 11);
+        $dateTime = $this->consumeBytes('nyear/cmonth/cday/chour/cmin/csec/c/atz/ctzhour/ctzmin', $length);
 
         $date     = $dateTime['year'] . '-' . $dateTime['month'] . '-' . $dateTime['day'];
         $time     = $dateTime['hour'] . ':' . sprintf('%02d', $dateTime['min']) . ':' . sprintf('%02d', $dateTime['sec']);
@@ -72,18 +72,18 @@ class IppResponseState
     /**
      * @return int[]
      */
-    private function consumeIntRange(): array
+    private function consumeIntRange(int $length): array
     {
         /** @var array{start: int, end: int} $data */
-        $data = $this->consumeBytes('Nstart/Nend', 8);
+        $data = $this->consumeBytes('Nstart/Nend', $length);
 
         return [(int)$data['start'], (int)$data['end']];
     }
 
-    private function consumeResolution(): IppResolution
+    private function consumeResolution(int $length): IppResolution
     {
         /** @var array{cross: int, feed: int, unit: int} $data */
-        $data = $this->consumeBytes('Ncross/Nfeed/cunit', 9);
+        $data = $this->consumeBytes('Ncross/Nfeed/cunit', $length);
 
         return new IppResolution($data['cross'], $data['feed'], $data['unit']);
     }
