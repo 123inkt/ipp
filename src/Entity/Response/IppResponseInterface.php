@@ -16,7 +16,7 @@ interface IppResponseInterface
     public function getStatusMessage(): ?string;
 
     /**
-     * @return IppAttribute[]
+     * @return array<string, IppAttribute>
      */
     public function getAttributes(): array;
 }
