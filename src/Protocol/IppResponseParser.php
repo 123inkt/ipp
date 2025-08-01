@@ -90,14 +90,11 @@ class IppResponseParser implements IppResponseParserInterface
         $nameLength = $state->consume(2, IppTypeEnum::Int);
         // Additional value https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1.5
         if ($nameLength === 0x0000) {
-            $this->lastAttribute->addAdditionalValue($this->getAttributeValue($attrType, $state));
-
-            return $this->lastAttribute;
+            return $this->lastAttribute->appendValue($this->getAttributeValue($attrType, $state));
         }
 
         /** @var string $attrName */
         $attrName = $state->consume($nameLength, IppTypeEnum::NameWithoutLang);
-
         $attrValue = $this->getAttributeValue($attrType, $state);
 
         $this->lastAttribute = new IppAttribute($attrType ?? IppTypeEnum::Int, $attrName, $attrValue);

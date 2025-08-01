@@ -9,7 +9,7 @@ use DR\Utils\Assert;
 
 class IppAttribute
 {
-    public function __construct(private readonly IppTypeEnum $type, private readonly string $name, private mixed $value)
+    public function __construct(private readonly IppTypeEnum $type, private readonly string $name, private readonly mixed $value)
     {
     }
 
@@ -28,12 +28,14 @@ class IppAttribute
         return $this->value;
     }
 
-    public function addAdditionalValue(mixed $additionalValue): void
+    public function appendValue(mixed $additionalValue): self
     {
         if (is_array($this->value) === false) {
-            $this->value = [$this->value];
+            $values = [$this->value];
         }
-        $this->value[] = $additionalValue;
+        $values[] = $additionalValue;
+
+        return new self($this->type, $this->name, $values);
     }
 
     /**
