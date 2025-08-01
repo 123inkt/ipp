@@ -70,7 +70,7 @@ composer require digitalrevolution/ipp
 
     $response = $ipp->getPrinterAttributes($printer);
     $attributes = $response->getAttributes();
-    $printerName = $attribute["printer-name"]->getValue();
+    $printerName = $attributes["printer-name"]->getValue();
 ```
 
 ### Creating a custom IPP operation
