@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DR\Ipp\Entity\Response;
 
 use DR\Ipp\Enum\JobStateEnum;
+use DR\Ipp\Protocol\IppAttribute;
 
 interface IppResponseInterface
 {
@@ -13,4 +14,9 @@ interface IppResponseInterface
     public function getJobState(): ?JobStateEnum;
 
     public function getStatusMessage(): ?string;
+
+    /**
+     * @return array<string, IppAttribute>
+     */
+    public function getAttributes(): array;
 }
