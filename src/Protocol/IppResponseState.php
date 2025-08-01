@@ -19,8 +19,7 @@ class IppResponseState
 
     public function getNextByte(): int
     {
-        /** @phpstan-return int */
-        return $this->unpackSingleValue('c');
+        return (int)$this->unpackSingleValue('c');
     }
 
     /**
@@ -41,7 +40,7 @@ class IppResponseState
     }
 
     /**
-     * @return int|string|array<int|string, int|string>
+     * @return array<int|string, mixed>|int|string
      */
     private function consumeBytes(string $unpack, int $byteCount): int|string|array
     {
@@ -54,7 +53,7 @@ class IppResponseState
     private function consumeDateTime(int $length): DateTime
     {
         // Datetime in rfc2579 format: https://datatracker.ietf.org/doc/html/rfc2579
-        /** @var array{year: int, month: int, day: int, hour: int, min: int, sec: int, int, tz: string, tzhour:int, tzmin: int}|false $dateTime */
+        /** @var array{year: int, month: int, day: int, hour: int, min: int, sec: int, int, tz: string, tzhour:int, tzmin: int} $dateTime */
         $dateTime = $this->consumeBytes('nyear/cmonth/cday/chour/cmin/csec/c/atz/ctzhour/ctzmin', $length);
 
         $date     = $dateTime['year'] . '-' . $dateTime['month'] . '-' . $dateTime['day'];

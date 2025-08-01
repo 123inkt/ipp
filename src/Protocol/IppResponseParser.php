@@ -60,9 +60,14 @@ class IppResponseParser implements IppResponseParserInterface
         $state->consume(2, null); // 0x0000
         while ($state->getNextByte() !== IppTypeEnum::EndCollection->value) {
             $state->consume(3, null); // 0x4a 0x00 0x00
+
+            /** @var string $name */
             $name = $this->getAttributeValue(IppTypeEnum::MemberAttributeName, $state);
+            /** @var int $valueType */
             $valueType = $state->consume(1, null);
             $state->consume(2, null); // 0x00 0x00
+
+            /** @var int $valueLength */
             $valueLength = $state->consume(2, IppTypeEnum::Int);
             $value = $state->consume($valueLength, IppTypeEnum::tryFrom($valueType));
             $collection->add($name, $value);

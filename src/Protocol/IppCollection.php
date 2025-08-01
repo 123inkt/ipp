@@ -6,6 +6,9 @@ namespace DR\Ipp\Protocol;
 
 class IppCollection
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $values = [];
 
     public function add(string $name, mixed $value): void
@@ -13,6 +16,9 @@ class IppCollection
         $this->values[$name] = $value;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getValues(): array
     {
         return $this->values;
