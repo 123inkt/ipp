@@ -63,6 +63,16 @@ composer require digitalrevolution/ipp
     $ipp->printerAdministration()->deletePrinter($printer);
 ```
 
+### Get Printer attributes
+```php
+    $printer = new IppPrinter();
+    $printer->setHostname('my.printer');
+
+    $response = $ipp->getPrinterAttributes($printer);
+    $attributes = $response->getAttributes();
+    $printerName = $attribute["printer-name"]->getValue();
+```
+
 ### Creating a custom IPP operation
 
 This project is created to be easily extensible, adding a new IPP operation is as simple as making sure it has an identifier in IppOperationEnum  

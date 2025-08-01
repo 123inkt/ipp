@@ -75,6 +75,9 @@ class Ipp implements LoggerAwareInterface
         return $this->getJobAttributes->getJob($jobUri);
     }
 
+    /**
+     * @throws ClientExceptionInterface
+     */
     public function getPrinterAttributes(IppPrinter $printer): IppResponseInterface
     {
         $this->getPrinterAttributes ??= new GetPrinterAttributesOperation($this->server, $this->httpClient);
