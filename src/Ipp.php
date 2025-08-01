@@ -76,6 +76,7 @@ class Ipp implements LoggerAwareInterface
     }
 
     /**
+     * Requests a list of printer attributes for the specified printer
      * @throws ClientExceptionInterface
      */
     public function getPrinterAttributes(IppPrinter $printer): IppResponseInterface
