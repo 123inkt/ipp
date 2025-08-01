@@ -94,7 +94,7 @@ class IppResponseState
     {
         $data = @unpack($unpack, $this->response);
         if ($data === false) {
-            throw new RuntimeException();
+            throw new RuntimeException('Failed to parse IPP array data');
         }
 
         return $data;
@@ -104,7 +104,7 @@ class IppResponseState
     {
         $data = @unpack($unpack, $this->response);
         if ($data === false || isset($data[1]) === false || (is_string($data[1]) === false && is_int($data[1]) === false)) {
-            throw new RuntimeException();
+            throw new RuntimeException('Failed to parse IPP data');
         }
 
         return $data[1];
