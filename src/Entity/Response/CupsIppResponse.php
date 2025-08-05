@@ -13,7 +13,7 @@ use DR\Utils\Assert;
 class CupsIppResponse implements IppResponseInterface
 {
     /**
-     * @param IppAttribute[] $attributes
+     * @param array<string, IppAttribute> $attributes
      */
     public function __construct(private readonly IppStatusCodeEnum $statusCode, private readonly array $attributes)
     {
@@ -57,7 +57,7 @@ class CupsIppResponse implements IppResponseInterface
     }
 
     /**
-     * @return IppAttribute[]
+     * @inheritDoc
      */
     public function getAttributes(): array
     {
