@@ -28,6 +28,16 @@ class IppAttribute
         return $this->value;
     }
 
+    public function appendValue(mixed $additionalValue): self
+    {
+        if (is_array($this->value) === false) {
+            $values = [$this->value];
+        }
+        $values[] = $additionalValue;
+
+        return new self($this->type, $this->name, $values);
+    }
+
     /**
      * @internal
      */

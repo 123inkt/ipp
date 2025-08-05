@@ -14,6 +14,7 @@ use DR\Ipp\Factory\PrintOperationFactory;
 use DR\Ipp\Operations\Cups\CupsCreatePrinter;
 use DR\Ipp\Operations\Cups\CupsDeletePrinter;
 use DR\Ipp\Operations\GetJobAttributesOperation;
+use DR\Ipp\Operations\GetPrinterAttributesOperation;
 use DR\Ipp\Operations\PrintOperation;
 use DR\Ipp\Protocol\IppResponseParser;
 use DR\Ipp\Service\PrinterAdminService;
@@ -31,6 +32,7 @@ class Ipp implements LoggerAwareInterface
 
     private ?PrintOperation $printOperation = null;
     private ?GetJobAttributesOperation $getJobAttributes = null;
+    private ?GetPrinterAttributesOperation $getPrinterAttributes = null;
 
     private ?PrinterAdminService $printerAdmin = null;
 
@@ -71,5 +73,16 @@ class Ipp implements LoggerAwareInterface
         $this->getJobAttributes ??= new GetJobAttributesOperation($this->httpClient);
 
         return $this->getJobAttributes->getJob($jobUri);
+    }
+
+    /**
+     * Requests a list of printer attributes for the specified printer
+     * @throws ClientExceptionInterface
+     */
+    public function getPrinterAttributes(IppPrinter $printer): IppResponseInterface
+    {
+        $this->getPrinterAttributes ??= new GetPrinterAttributesOperation($this->server, $this->httpClient);
+
+        return $this->getPrinterAttributes->getAttributes($printer);
     }
 }

@@ -4,26 +4,31 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Protocol;
 
-use DateTime;
 use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationTagEnum;
 use DR\Ipp\Enum\IppStatusCodeEnum;
 use DR\Ipp\Enum\IppTypeEnum;
-use RuntimeException;
 
 /**
  * @internal
  */
 class IppResponseParser implements IppResponseParserInterface
 {
+    private IppAttribute $lastAttribute;
+
+    /**
+     * @see https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1
+     */
     public function getResponse(string $response): IppResponseInterface
     {
-        [, $response] = $this->consume($response, 2, IppTypeEnum::Int);            // version   0x0101
+        $state = new IppResponseState($response);
+
+        $state->consume(2, IppTypeEnum::Int);            // version   0x0101
         /** @var int $status */
-        [$status, $response] = $this->consume($response, 2, IppTypeEnum::Int);     // status    0x0502
-        [, $response] = $this->consume($response, 4, IppTypeEnum::Int);            // requestId 0x00000001
-        [, $response] = $this->consume($response, 1, IppTypeEnum::Int);            // IPPOperationTag::OPERATION_ATTRIBUTE_START
+        $status = $state->consume(2, IppTypeEnum::Int);  // status    0x0502
+        $state->consume(4, IppTypeEnum::Int);            // requestId 0x00000001
+        $state->consume(1, IppTypeEnum::Int);            // IPPOperationTag::OPERATION_ATTRIBUTE_START
 
         $attributesTags = [
             IppOperationTagEnum::JobAttributeStart->value,
@@ -31,13 +36,13 @@ class IppResponseParser implements IppResponseParserInterface
             IppOperationTagEnum::UnsupportedAttributes->value,
         ];
         $attributes     = [];
-        while ($this->unpack('c', $response) !== IppOperationTagEnum::AttributeEnd->value) {
-            // look for attribute tag and remove it before parsing further attributes
-            if (in_array($this->unpack('c', $response), $attributesTags, true)) {
-                [, $response] = $this->consume($response, 1, null);
+        while ($state->getNextByte() !== IppOperationTagEnum::AttributeEnd->value) {
+            // look for an attribute tag and remove it before parsing further attributes
+            if (in_array($state->getNextByte(), $attributesTags, true)) {
+                $state->consume(1, null);
             }
 
-            [$attribute, $response] = $this->consumeAttribute($response);
+            $attribute = $this->getAttribute($state);
             $attributes[$attribute->getName()] = $attribute;
         }
         $statusCode = IppStatusCodeEnum::tryFrom($status) ?? IppStatusCodeEnum::Unknown;
@@ -46,78 +51,66 @@ class IppResponseParser implements IppResponseParserInterface
     }
 
     /**
-     * Decodes an attribute from the response, and returns the decoded values and the rest of the response
-     * @return array{IppAttribute, string}
+     * @see https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1.6
      */
-    private function consumeAttribute(string $response): array
+    private function getCollection(IppResponseState $state): IppCollection
     {
-        /** @var int $type */
-        [$type, $response] = $this->consume($response, 1, null);
-        [$nameLength, $response] = $this->consume($response, 2, IppTypeEnum::Int);
-        /** @var int $nameLength */
-        [$attrName, $response] = $this->consume($response, $nameLength, IppTypeEnum::NameWithoutLang);
-        /** @var string $attrName */
-        [$valueLength, $response] = $this->consume($response, 2, IppTypeEnum::Int);
-        /** @var int $valueLength */
-        [$attrValue, $response] = $this->consume(
-            $response,
-            $valueLength,
-            IppTypeEnum::tryFrom($type),
-        );
+        $collection = new IppCollection();
 
-        return [new IppAttribute(IppTypeEnum::tryFrom($type) ?? IppTypeEnum::Int, $attrName, $attrValue), $response];
+        $state->consume(2, null); // 0x0000
+        while ($state->getNextByte() !== IppTypeEnum::EndCollection->value) {
+            $state->consume(3, null); // 0x4a 0x00 0x00
+
+            /** @var string $name */
+            $name = $this->getAttributeValue(IppTypeEnum::MemberAttributeName, $state);
+            /** @var int $valueType */
+            $valueType = $state->consume(1, null);
+            $state->consume(2, null); // 0x00 0x00
+
+            /** @var int $valueLength */
+            $valueLength = $state->consume(2, IppTypeEnum::Int);
+            $value = $state->consume($valueLength, IppTypeEnum::tryFrom($valueType));
+            $collection->add($name, $value);
+        }
+        $state->consume(5, null); // 0x37 0x00 0x00 0x00 0x00
+
+        return $collection;
     }
 
     /**
-     * Decodes part of a binary string, and returns the decoded value and the rest of the binary string
-     * @return array{int|string|DateTime, string}
+     * Decodes an attribute from the response, and returns the decoded value(s)
      */
-    private function consume(string $response, int $length, ?IppTypeEnum $type): array
+    private function getAttribute(IppResponseState $state): IppAttribute
     {
-        switch ($type) {
-            case IppTypeEnum::Int:
-            case IppTypeEnum::Enum:
-                $unpack = $length === 2 ? 'n' : 'N';
-                break;
-            case IppTypeEnum::DateTime:
-                return [$this->unpackDateTime($response), substr($response, $length)];
-            case null:
-                $unpack = 'c' . $length;
-                break;
-            default:
-                $unpack = 'a' . $length;
+        /** @var int $type */
+        $type = $state->consume(1, null);
+        $attrType = IppTypeEnum::tryFrom($type);
+
+        /** @var int $nameLength */
+        $nameLength = $state->consume(2, IppTypeEnum::Int);
+        // Additional value https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1.5
+        if ($nameLength === 0x0000) {
+            return $this->lastAttribute->appendValue($this->getAttributeValue($attrType, $state));
         }
 
-        return [$this->unpack($unpack, $response), substr($response, $length)];
+        /** @var string $attrName */
+        $attrName = $state->consume($nameLength, IppTypeEnum::NameWithoutLang);
+        $attrValue = $this->getAttributeValue($attrType, $state);
+
+        $this->lastAttribute = new IppAttribute($attrType ?? IppTypeEnum::Int, $attrName, $attrValue);
+
+        return $this->lastAttribute;
     }
 
-    private function unpackDateTime(string $response): DateTime
+    private function getAttributeValue(?IppTypeEnum $type, IppResponseState $state): mixed
     {
-        // Datetime in rfc2579 format: https://datatracker.ietf.org/doc/html/rfc2579
-        /** @var array{year: int, month: int, day: int, hour: int, min: int, sec: int, int, tz: string, tzhour:int, tzmin: int}|false $dateTime */
-        $dateTime = @unpack('nyear/cmonth/cday/chour/cmin/csec/c/atz/ctzhour/ctzmin', $response);
-        if ($dateTime === false) {
-            throw new RuntimeException('Failed to unpack IPP datetime');
-        }
-        $date     = $dateTime['year'] . '-' . $dateTime['month'] . '-' . $dateTime['day'];
-        $time     = $dateTime['hour'] . ':' . sprintf('%02d', $dateTime['min']) . ':' . sprintf('%02d', $dateTime['sec']);
-        $timeZone = $dateTime['tz'] . sprintf('%02d', $dateTime['tzhour']) . sprintf('%02d', $dateTime['tzmin']);
-
-        $converted = DateTime::createFromFormat('Y-n-j G:i:sO', $date . ' ' . $time . $timeZone);
-        if ($converted === false) {
-            throw new RuntimeException('Invalid DateTime in IPP attribute');
+        if ($type === IppTypeEnum::Collection) {
+            return $this->getCollection($state);
         }
 
-        return $converted;
-    }
+        /** @var int $valueLength */
+        $valueLength = $state->consume(2, IppTypeEnum::Int);
 
-    private function unpack(string $unpack, string $string): string|int
-    {
-        $data = @unpack($unpack, $string);
-        if ($data === false || isset($data[1]) === false || (is_string($data[1]) === false && is_int($data[1]) === false)) {
-            throw new RuntimeException();
-        }
-
-        return $data[1];
+        return $state->consume($valueLength, $type);
     }
 }
