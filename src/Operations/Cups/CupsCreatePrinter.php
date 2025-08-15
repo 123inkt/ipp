@@ -44,6 +44,9 @@ class CupsCreatePrinter implements CreatePrinterInterface
         $operation->addPrinterAttribute(new IppAttribute(IppTypeEnum::Bool, 'printer-is-accepting-jobs', true));
         $operation->addPrinterAttribute(new IppAttribute(IppTypeEnum::Uri, 'device-uri', $printer->getDeviceUri()));
         $operation->addPrinterAttribute(new IppAttribute(IppTypeEnum::TextWithoutLang, 'printer-location', $printer->getLocation()));
+        if ($printer->getPpdName() !== null) {
+            $operation->addPrinterAttribute(new IppAttribute(IppTypeEnum::NameWithoutLang, 'ppd-name', $printer->getPpdName()));
+        }
 
         return $this->client->sendRequest($operation);
     }

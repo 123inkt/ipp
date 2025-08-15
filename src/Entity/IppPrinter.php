@@ -10,6 +10,7 @@ class IppPrinter
     private string $deviceUri;
     private string $location;
     private ?string $trayName = null;
+    private ?string $ppdName = null;
 
     public function getHostname(): string
     {
@@ -55,6 +56,18 @@ class IppPrinter
     public function setTrayName(?string $trayName): self
     {
         $this->trayName = $trayName;
+
+        return $this;
+    }
+
+    public function getPpdName(): ?string
+    {
+        return $this->ppdName;
+    }
+
+    public function setPpdName(?string $ppdName): self
+    {
+        $this->ppdName = $ppdName;
 
         return $this;
     }

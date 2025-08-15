@@ -22,7 +22,7 @@ class CupsCreatePrinterTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function testPrint(): void
+    public function testCreate(): void
     {
         $cups   = 'https://cups';
         $server = new IppServer();
@@ -41,7 +41,7 @@ class CupsCreatePrinterTest extends TestCase
         $client->expects($this->once())->method('sendRequest')->with(static::callback(static function (IppOperation $operation) {
             static::assertSame(IppOperationEnum::CupsAddModifyPrinter, $operation->getOperation());
             static::assertCount(0, $operation->getJobAttributes(), 'Job attribute count incorrect');
-            static::assertCount(4, $operation->getPrinterAttributes(), 'Printer attribute count incorrect');
+            static::assertCount(5, $operation->getPrinterAttributes(), 'Printer attribute count incorrect');
             static::assertCount(4, $operation->getOperationAttributes(), 'Operation attribute count incorrect');
 
             return true;
@@ -51,6 +51,7 @@ class CupsCreatePrinterTest extends TestCase
         $printer->setHostname('test');
         $printer->setDeviceUri('socket://10.10.10.10:9100');
         $printer->setLocation('location');
+        $printer->setPpdName('file.ppd');
 
         $printerCreator->create($printer);
     }
