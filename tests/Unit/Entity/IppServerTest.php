@@ -14,8 +14,15 @@ class IppServerTest extends TestCase
 {
     use AccessorPairAsserter;
 
-    public function test(): void
+    public function testAccessorPairs(): void
     {
         self::assertAccessorPairs(IppServer::class);
+    }
+
+    public function testUriAccessorWithTrailingSlash(): void
+    {
+        $server = new IppServer();
+        $server->setUri('http://example.com/ipp/');
+        static::assertSame('http://example.com/ipp', $server->getUri());
     }
 }

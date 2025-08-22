@@ -17,7 +17,7 @@ class IppServer
 
     public function setUri(string $uri): self
     {
-        $this->uri = $uri;
+        $this->uri = rtrim($uri, '/');
 
         return $this;
     }
