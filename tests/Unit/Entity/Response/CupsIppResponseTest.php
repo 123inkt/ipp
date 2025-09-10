@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit\Entity\Response;
 
-use DigitalRevolution\AccessorPairConstraint\AccessorPairAsserter;
 use DR\Ipp\Entity\IppJob;
 use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Enum\IppStatusCodeEnum;
@@ -16,11 +15,11 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(CupsIppResponse::class)]
 class CupsIppResponseTest extends TestCase
 {
-    use AccessorPairAsserter;
-
-    public function test(): void
+    public function testGetAttributes(): void
     {
-        self::assertAccessorPairs(CupsIppResponse::class);
+        $attribute = new IppAttribute(IppTypeEnum::Int, '', 0);
+        $response = new CupsIppResponse(IppStatusCodeEnum::SuccessfulOk, ['status-code' => $attribute], []);
+        static::assertSame(['status-code' => $attribute], $response->getAttributes());
     }
 
     public function testGetStatusCode(): void

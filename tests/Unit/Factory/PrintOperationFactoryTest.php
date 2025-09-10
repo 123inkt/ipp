@@ -21,9 +21,9 @@ class PrintOperationFactoryTest extends TestCase
     {
         $logger       = $this->createMock(LoggerInterface::class);
         $client       = $this->createMock(IppHttpClientInterface::class);
-        $parseFactory = $this->createMock(ResponseParserFactoryInterface::class);
+        $parserFactory = $this->createMock(ResponseParserFactoryInterface::class);
 
         $factory = new PrintOperationFactory();
-        $factory->create(new IppServer(), $client, $parseFactory, $logger);
+        $factory->create(new IppServer(), $client, $parserFactory, $logger);
     }
 }

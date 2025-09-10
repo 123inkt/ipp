@@ -12,7 +12,7 @@ use DR\Ipp\Protocol\IppStatusMessageService;
 class CupsIppResponse implements IppResponseInterface
 {
     /**
-     * @param array<string, IppAttribute|IppAttribute[]> $attributes
+     * @param array<string, IppAttribute> $attributes
      * @param IppJob[] $jobs
      */
     public function __construct(private readonly IppStatusCodeEnum $statusCode, private readonly array $attributes, private readonly array $jobs)

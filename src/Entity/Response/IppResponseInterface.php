@@ -20,7 +20,7 @@ interface IppResponseInterface
     public function getJobs(): array;
 
     /**
-     * @return array<string, IppAttribute|IppAttribute[]>
+     * @return array<string, IppAttribute>
      */
     public function getAttributes(): array;
 }

@@ -36,8 +36,8 @@ class PrintOperationTest extends TestCase
         $server->setUri($cups);
 
         $client       = $this->createMock(IppHttpClientInterface::class);
-        $parseFactory = $this->createMock(ResponseParserFactoryInterface::class);
-        $print        = new PrintOperation($server, $client, $parseFactory);
+        $parserFactory = $this->createMock(ResponseParserFactoryInterface::class);
+        $print        = new PrintOperation($server, $client, $parserFactory);
 
         $fileData        = 'test';
         $responseContent = 'test';
@@ -79,8 +79,8 @@ class PrintOperationTest extends TestCase
         $server = new IppServer();
         $server->setUri($cups);
         $client       = $this->createMock(IppHttpClientInterface::class);
-        $parseFactory = $this->createMock(ResponseParserFactoryInterface::class);
-        $print        = new PrintOperation($server, $client, $parseFactory);
+        $parserFactory = $this->createMock(ResponseParserFactoryInterface::class);
+        $print        = new PrintOperation($server, $client, $parserFactory);
         static::assertSame($expected, $print->fileTypeLookup($fileType));
     }
 

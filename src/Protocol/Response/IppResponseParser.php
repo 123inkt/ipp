@@ -38,7 +38,7 @@ class IppResponseParser implements IppResponseParserInterface
         $job            = $this->jobFactory->create($attributes);
         $jobs           = $job === null ? [] : [$job];
 
-        return new CupsIppResponse($statusCode, $attributeStore->getNormalizedAttributes(), $jobs);
+        return new CupsIppResponse($statusCode, $attributes, $jobs);
     }
 
     protected function parseHeader(IppResponseState $state): IppStatusCodeEnum

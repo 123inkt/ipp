@@ -93,21 +93,23 @@ class IppResponseParserTest extends TestCase
 
         $attributes = $parser->getResponse($responseMock)->getAttributes();
         static::assertArrayHasKey('job-id', $attributes);
-        static::assertIsArray($attributes['job-id']);
-        static::assertCount(3, $attributes['job-id']);
-        static::assertArrayHasKey(0, $attributes['job-id']);
-        static::assertSame(1, $attributes['job-id'][0]->getValue());
-        static::assertArrayHasKey(0, $attributes['job-id']);
-        static::assertSame(2, $attributes['job-id'][1]->getValue());
-        static::assertArrayHasKey(0, $attributes['job-id']);
-        static::assertSame(3, $attributes['job-id'][2]->getValue());
+        $value = $attributes['job-id']->getValue();
+        static::assertIsArray($value);
+        static::assertCount(3, $value);
+        static::assertArrayHasKey(0, $value);
+        static::assertSame(1, $value[0]);
+        static::assertArrayHasKey(0, $value);
+        static::assertSame(2, $value[1]);
+        static::assertArrayHasKey(0, $value);
+        static::assertSame(3, $value[2]);
 
         static::assertArrayHasKey('job-state', $attributes);
-        static::assertIsArray($attributes['job-state']);
-        static::assertArrayHasKey(1, $attributes['job-state']);
-        static::assertSame(9, $attributes['job-state'][1]->getValue());
-        static::assertArrayHasKey(2, $attributes['job-state']);
-        static::assertSame(9, $attributes['job-state'][2]->getValue());
+        $value = $attributes['job-state']->getValue();
+        static::assertIsArray($value);
+        static::assertArrayHasKey(0, $value);
+        static::assertSame(9, $value[0]);
+        static::assertArrayHasKey(1, $value);
+        static::assertSame(9, $value[1]);
     }
 
     public function testParseError(): void

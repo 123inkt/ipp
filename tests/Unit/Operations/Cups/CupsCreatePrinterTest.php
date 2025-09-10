@@ -32,8 +32,8 @@ class CupsCreatePrinterTest extends TestCase
         $server->setPassword('admin');
 
         $client           = $this->createMock(IppHttpClientInterface::class);
-        $parseFactory     = $this->createMock(ResponseParserFactoryInterface::class);
-        $printerCreator   = new CupsCreatePrinter($server, $client, $parseFactory);
+        $parserFactory     = $this->createMock(ResponseParserFactoryInterface::class);
+        $printerCreator   = new CupsCreatePrinter($server, $client, $parserFactory);
         $responseContents = 'test';
 
         $body = $this->createMock(StreamInterface::class);
