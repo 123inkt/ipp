@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit;
 
+use DR\Ipp\Entity\IppJob;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
-use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Ipp;
 use DR\Ipp\Operations\GetJobAttributesOperation;
 use DR\Ipp\Operations\PrintOperation;
@@ -51,13 +51,14 @@ class IppTest extends TestCase
      */
     public function testGetJobAttributes(): void
     {
-        $job = $this->createMock(IppResponseInterface::class);
+        $job = new IppJob();
+        $job->setUri('my-uri');
 
         $mock = $this->createMock(GetJobAttributesOperation::class);
         $this->setPrivateProperty($this->ipp, 'getJobAttributes', $mock);
 
-        $mock->expects($this->once())->method('getJob')->with($job->getJobUri() ?? '');
-        $this->ipp->getJobAttributes($job->getJobUri() ?? '');
+        $mock->expects($this->once())->method('getJob')->with($job->getUri() ?? '');
+        $this->ipp->getJobAttributes($job->getUri() ?? '');
     }
 
     /**

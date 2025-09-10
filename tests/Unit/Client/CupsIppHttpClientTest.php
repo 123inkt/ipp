@@ -34,7 +34,6 @@ class CupsIppHttpClientTest extends TestCase
         $responseStream = $this->createMock(StreamInterface::class);
         $responseStream->method('getContents')->willReturn('');
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->once())->method('getBody')->willReturn($responseStream);
 
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->once())->method('sendRequest')->with(static::callback(static function (Request $request) {
@@ -50,9 +49,7 @@ class CupsIppHttpClientTest extends TestCase
             return true;
         }))->willReturn($response);
 
-        $parser = $this->createMock(IppResponseParser::class);
-        $parser->expects($this->once())->method('getResponse');
-        $client = new CupsIppHttpClient($server, $clientMock, $parser);
+        $client = new CupsIppHttpClient($server, $clientMock);
 
         $operation = $this->createMock(IppOperation::class);
         $operation->method('getOperation')->willReturn(IppOperationEnum::CupsAddModifyPrinter);
@@ -72,7 +69,6 @@ class CupsIppHttpClientTest extends TestCase
         $responseStream = $this->createMock(StreamInterface::class);
         $responseStream->method('getContents')->willReturn('');
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->once())->method('getBody')->willReturn($responseStream);
 
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->once())->method('sendRequest')->with(static::callback(static function (Request $request) {
@@ -88,9 +84,7 @@ class CupsIppHttpClientTest extends TestCase
             return true;
         }))->willReturn($response);
 
-        $parser = $this->createMock(IppResponseParser::class);
-        $parser->expects($this->once())->method('getResponse');
-        $client = new CupsIppHttpClient($server, $clientMock, $parser);
+        $client = new CupsIppHttpClient($server, $clientMock);
 
         $operation = $this->createMock(IppOperation::class);
         $operation->method('getOperation')->willReturn(IppOperationEnum::PrintJob);

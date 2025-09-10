@@ -8,17 +8,18 @@ use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
-use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\FileTypeEnum;
 use DR\Ipp\Enum\IppAttributeTypeEnum;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
+use DR\Ipp\Factory\ResponseParserFactoryInterface;
 use DR\Ipp\Operations\PrintOperation;
 use DR\Ipp\Protocol\IppAttribute;
 use DR\Ipp\Protocol\IppOperation;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Throwable;
 
@@ -34,15 +35,16 @@ class PrintOperationTest extends TestCase
         $server = new IppServer();
         $server->setUri($cups);
 
-        $client = $this->createMock(IppHttpClientInterface::class);
-        $print  = new PrintOperation($server, $client);
+        $client       = $this->createMock(IppHttpClientInterface::class);
+        $parseFactory = $this->createMock(ResponseParserFactoryInterface::class);
+        $print        = new PrintOperation($server, $client, $parseFactory);
 
         $fileData        = 'test';
         $responseContent = 'test';
 
         $body = $this->createMock(StreamInterface::class);
         $body->method('getContents')->willReturn($responseContent);
-        $response = $this->createMock(IppResponseInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
 
         $client->expects($this->once())->method('sendRequest')->with(static::callback(static function (IppOperation $operation) {
             static::assertSame(IppOperationEnum::PrintJob, $operation->getOperation());
@@ -76,8 +78,9 @@ class PrintOperationTest extends TestCase
         $cups   = 'https://cups';
         $server = new IppServer();
         $server->setUri($cups);
-        $client = $this->createMock(IppHttpClientInterface::class);
-        $print  = new PrintOperation($server, $client);
+        $client       = $this->createMock(IppHttpClientInterface::class);
+        $parseFactory = $this->createMock(ResponseParserFactoryInterface::class);
+        $print        = new PrintOperation($server, $client, $parseFactory);
         static::assertSame($expected, $print->fileTypeLookup($fileType));
     }
 

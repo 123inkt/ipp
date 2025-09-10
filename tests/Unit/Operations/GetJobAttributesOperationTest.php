@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace DR\Ipp\Tests\Unit\Operations;
 
 use DR\Ipp\Client\IppHttpClientInterface;
+use DR\Ipp\Entity\IppJob;
 use DR\Ipp\Entity\IppServer;
-use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
+use DR\Ipp\Factory\ResponseParserFactoryInterface;
 use DR\Ipp\Operations\GetJobAttributesOperation;
 use DR\Ipp\Protocol\IppOperation;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Throwable;
 
@@ -28,15 +30,16 @@ class GetJobAttributesOperationTest extends TestCase
         $server->setUri($cups);
 
         $client          = $this->createMock(IppHttpClientInterface::class);
-        $print           = new GetJobAttributesOperation($client);
+        $parseFactory    = $this->createMock(ResponseParserFactoryInterface::class);
+        $print           = new GetJobAttributesOperation($client, $parseFactory);
         $responseContent = 'test';
 
         $body = $this->createMock(StreamInterface::class);
         $body->method('getContents')->willReturn($responseContent);
-        $response = $this->createMock(IppResponseInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
 
-        $printJob = $this->createMock(IppResponseInterface::class);
-        $printJob->method('getJobUri')->willReturn($cups . '/jobs/1160');
+        $printJob = new IppJob();
+        $printJob->setUri($cups . '/jobs/1160');
 
         $client->expects($this->once())->method('sendRequest')->with(static::callback(static function (IppOperation $operation) {
             static::assertSame(IppOperationEnum::GetJobAttributes, $operation->getOperation());
@@ -47,7 +50,7 @@ class GetJobAttributesOperationTest extends TestCase
             return true;
         }))->willReturn($response);
 
-        static::assertIsString($printJob->getJobUri());
-        $print->getJob($printJob->getJobUri());
+        static::assertIsString($printJob->getUri());
+        $print->getJob($printJob->getUri());
     }
 }

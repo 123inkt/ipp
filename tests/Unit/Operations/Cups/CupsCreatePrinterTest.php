@@ -7,12 +7,13 @@ namespace DR\Ipp\Tests\Unit\Operations\Cups;
 use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppServer;
-use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
+use DR\Ipp\Factory\ResponseParserFactoryInterface;
 use DR\Ipp\Operations\Cups\CupsCreatePrinter;
 use DR\Ipp\Protocol\IppOperation;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Throwable;
 
@@ -31,12 +32,13 @@ class CupsCreatePrinterTest extends TestCase
         $server->setPassword('admin');
 
         $client           = $this->createMock(IppHttpClientInterface::class);
-        $printerCreator   = new CupsCreatePrinter($server, $client);
+        $parseFactory     = $this->createMock(ResponseParserFactoryInterface::class);
+        $printerCreator   = new CupsCreatePrinter($server, $client, $parseFactory);
         $responseContents = 'test';
 
         $body = $this->createMock(StreamInterface::class);
         $body->method('getContents')->willReturn($responseContents);
-        $response = $this->createMock(IppResponseInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
 
         $client->expects($this->once())->method('sendRequest')->with(static::callback(static function (IppOperation $operation) {
             static::assertSame(IppOperationEnum::CupsAddModifyPrinter, $operation->getOperation());
