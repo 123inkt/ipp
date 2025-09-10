@@ -11,12 +11,13 @@ use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Factory\PrintOperationFactory;
+use DR\Ipp\Factory\ResponseParserFactory;
 use DR\Ipp\Operations\Cups\CupsCreatePrinter;
 use DR\Ipp\Operations\Cups\CupsDeletePrinter;
 use DR\Ipp\Operations\GetJobAttributesOperation;
+use DR\Ipp\Operations\GetJobsOperation;
 use DR\Ipp\Operations\GetPrinterAttributesOperation;
 use DR\Ipp\Operations\PrintOperation;
-use DR\Ipp\Protocol\IppResponseParser;
 use DR\Ipp\Service\PrinterAdminService;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -28,11 +29,13 @@ class Ipp implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     private IppHttpClientInterface $httpClient;
+    private ResponseParserFactory $parserFactory;
     private PrintOperationFactory $printOperationFactory;
 
     private ?PrintOperation $printOperation = null;
     private ?GetJobAttributesOperation $getJobAttributes = null;
     private ?GetPrinterAttributesOperation $getPrinterAttributes = null;
+    private ?GetJobsOperation $getJobs = null;
 
     private ?PrinterAdminService $printerAdmin = null;
 
@@ -40,16 +43,18 @@ class Ipp implements LoggerAwareInterface
         private readonly IppServer $server,
         private readonly ClientInterface $client,
         ?IppHttpClientInterface $httpClient = null,
+        ?ResponseParserFactory $parserFactory = null,
     ) {
-        $this->httpClient            = $httpClient ?? new CupsIppHttpClient($this->server, $this->client, new IppResponseParser());
+        $this->httpClient            = $httpClient ?? new CupsIppHttpClient($this->server, $this->client);
+        $this->parserFactory         = $parserFactory ?? new ResponseParserFactory();
         $this->printOperationFactory = new PrintOperationFactory();
     }
 
     public function printerAdministration(): PrinterAdminService
     {
         $this->printerAdmin ??= new PrinterAdminService(
-            new CupsCreatePrinter($this->server, $this->httpClient),
-            new CupsDeletePrinter($this->server, $this->httpClient),
+            new CupsCreatePrinter($this->server, $this->httpClient, $this->parserFactory),
+            new CupsDeletePrinter($this->server, $this->httpClient, $this->parserFactory),
         );
 
         return $this->printerAdmin;
@@ -60,7 +65,7 @@ class Ipp implements LoggerAwareInterface
      */
     public function print(IppPrinter $printer, IppPrintFile $file): IppResponseInterface
     {
-        $this->printOperation ??= $this->printOperationFactory->create($this->server, $this->httpClient, $this->logger);
+        $this->printOperation ??= $this->printOperationFactory->create($this->server, $this->httpClient, $this->parserFactory, $this->logger);
 
         return $this->printOperation->print($printer, $file);
     }
@@ -70,7 +75,7 @@ class Ipp implements LoggerAwareInterface
      */
     public function getJobAttributes(string $jobUri): IppResponseInterface
     {
-        $this->getJobAttributes ??= new GetJobAttributesOperation($this->httpClient);
+        $this->getJobAttributes ??= new GetJobAttributesOperation($this->httpClient, $this->parserFactory);
 
         return $this->getJobAttributes->getJob($jobUri);
     }
@@ -81,8 +86,18 @@ class Ipp implements LoggerAwareInterface
      */
     public function getPrinterAttributes(IppPrinter $printer): IppResponseInterface
     {
-        $this->getPrinterAttributes ??= new GetPrinterAttributesOperation($this->server, $this->httpClient);
+        $this->getPrinterAttributes ??= new GetPrinterAttributesOperation($this->server, $this->httpClient, $this->parserFactory);
 
         return $this->getPrinterAttributes->getAttributes($printer);
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     */
+    public function getJobs(IppPrinter $printer, bool $completed = false): IppResponseInterface
+    {
+        $this->getJobs ??= new GetJobsOperation($this->server, $this->httpClient, $this->parserFactory);
+
+        return $this->getJobs->getJobList($printer, $completed);
     }
 }

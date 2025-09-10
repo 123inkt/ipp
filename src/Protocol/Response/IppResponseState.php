@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DR\Ipp\Protocol;
+namespace DR\Ipp\Protocol\Response;
 
 use DateTime;
 use DR\Ipp\Enum\IppTypeEnum;
+use DR\Ipp\Protocol\IppResolution;
 use RuntimeException;
 
 /**

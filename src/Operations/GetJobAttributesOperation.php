@@ -8,6 +8,7 @@ use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
+use DR\Ipp\Factory\ResponseParserFactoryInterface;
 use DR\Ipp\Protocol\IppAttribute;
 use DR\Ipp\Protocol\IppOperation;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -17,7 +18,7 @@ use Psr\Http\Client\ClientExceptionInterface;
  */
 class GetJobAttributesOperation
 {
-    public function __construct(private readonly IppHttpClientInterface $client)
+    public function __construct(private readonly IppHttpClientInterface $client, private readonly ResponseParserFactoryInterface $parserFactory)
     {
     }
 
@@ -33,6 +34,6 @@ class GetJobAttributesOperation
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Keyword, 'which-jobs', 'all'));
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Keyword, 'requested-attributes', 'all'));
 
-        return $this->client->sendRequest($operation);
+        return $this->parserFactory->responseParser()->getResponse($this->client->sendRequest($operation));
     }
 }

@@ -14,9 +14,13 @@ use Psr\Log\LoggerInterface;
  */
 class PrintOperationFactory
 {
-    public function create(IppServer $server, IppHttpClientInterface $httpClient, ?LoggerInterface $logger): PrintOperation
-    {
-        $printOperation = new PrintOperation($server, $httpClient);
+    public function create(
+        IppServer $server,
+        IppHttpClientInterface $httpClient,
+        ResponseParserFactoryInterface $parserFactory,
+        ?LoggerInterface $logger,
+    ): PrintOperation {
+        $printOperation = new PrintOperation($server, $httpClient, $parserFactory);
         if ($logger !== null) {
             $printOperation->setLogger($logger);
         }

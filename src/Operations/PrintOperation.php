@@ -13,6 +13,7 @@ use DR\Ipp\Enum\FileTypeEnum;
 use DR\Ipp\Enum\IppAttributeTypeEnum;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
+use DR\Ipp\Factory\ResponseParserFactoryInterface;
 use DR\Ipp\Protocol\IppAttribute;
 use DR\Ipp\Protocol\IppOperation;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -26,8 +27,11 @@ class PrintOperation implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    public function __construct(private readonly IppServer $server, private readonly IppHttpClientInterface $client)
-    {
+    public function __construct(
+        private readonly IppServer $server,
+        private readonly IppHttpClientInterface $client,
+        private readonly ResponseParserFactoryInterface $parserFactory,
+    ) {
     }
 
     /**
@@ -59,7 +63,7 @@ class PrintOperation implements LoggerAwareInterface
 
         $operation->setFileData($file->getData());
 
-        return $this->client->sendRequest($operation);
+        return $this->parserFactory->responseParser()->getResponse($this->client->sendRequest($operation));
     }
 
     public function fileTypeLookup(FileTypeEnum $fileType): string

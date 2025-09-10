@@ -4,3 +4,18 @@ parameters:
   paths:
     - src
     - tests
+
+  ignoreErrors:
+    # due to phpstan bug https://github.com/phpstan/phpstan/issues/7893
+    -
+        message: '#^Cannot access offset \(int\|string\) on non\-empty\-array\<DR\\Ipp\\Protocol\\IppAttribute\>\|DR\\Ipp\\Protocol\\IppAttribute\.$#'
+        identifier: offsetAccess.nonOffsetAccessible
+        count: 1
+        path: src/Protocol/IppAttributeStore.php
+
+    -
+        message: '#^Cannot access offset int on array\<DR\\Ipp\\Protocol\\IppAttribute\>\|DR\\Ipp\\Protocol\\IppAttribute\.$#'
+        identifier: offsetAccess.nonOffsetAccessible
+        count: 1
+        path: src/Protocol/IppAttributeStore.php
+

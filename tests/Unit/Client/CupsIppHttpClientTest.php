@@ -9,7 +9,7 @@ use DR\Ipp\Client\IppRequestException;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Protocol\IppOperation;
-use DR\Ipp\Protocol\IppResponseParser;
+use DR\Ipp\Protocol\Response\IppResponseParser;
 use Nyholm\Psr7\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
