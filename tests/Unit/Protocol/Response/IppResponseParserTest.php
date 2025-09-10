@@ -77,6 +77,33 @@ class IppResponseParserTest extends TestCase
         );
     }
 
+    public function testAdditionalValue(): void
+    {
+        $response = new IppOperation(IppOperationEnum::PrintJob);
+        $response->addJobAttribute(new IppAttribute(IppTypeEnum::Int, 'job-id', 1));
+
+        $additionalValue = pack('c', IppTypeEnum::Int->value);
+        $additionalValue .= pack('n', 0);                       // name length of zero
+        $additionalValue .= pack('n', 2) . pack('n', 0x02);     // int value 2
+        $additionalValue .= pack('c', IppOperationTagEnum::AttributeEnd->value);
+
+        $jobFactory = $this->createMock(IppJobFactory::class);
+        $parser     = new IppResponseParser($jobFactory);
+
+        $body = $this->createMock(StreamInterface::class);
+        $body->method('getContents')->willReturn(substr((string)$response, 0, -1) . $additionalValue);
+        $responseMock = $this->createMock(ResponseInterface::class);
+        $responseMock->method('getBody')->willReturn($body);
+
+        $ippResponse = $parser->getResponse($responseMock);
+        $attr        = $ippResponse->getAttributes();
+        static::assertCount(1, $attr);
+        static::assertArrayHasKey('job-id', $attr);
+        static::assertSame('job-id', $attr['job-id']->getName());
+        static::assertSame(IppTypeEnum::Int, $attr['job-id']->getType());
+        static::assertSame([1, 2], $attr['job-id']->getValue());
+    }
+
     public function testGetResponseCollection(): void
     {
         $name  = 'unit';
