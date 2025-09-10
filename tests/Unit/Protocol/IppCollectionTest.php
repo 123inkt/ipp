@@ -19,4 +19,3 @@ class IppCollectionTest extends TestCase
         self::assertAccessorPairs(IppCollection::class);
     }
 }
-

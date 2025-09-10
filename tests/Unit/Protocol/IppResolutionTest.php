@@ -19,4 +19,3 @@ class IppResolutionTest extends TestCase
         self::assertAccessorPairs(IppResolution::class);
     }
 }
-
