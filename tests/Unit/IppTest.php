@@ -10,6 +10,8 @@ use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Ipp;
 use DR\Ipp\Operations\GetJobAttributesOperation;
+use DR\Ipp\Operations\GetJobsOperation;
+use DR\Ipp\Operations\GetPrinterAttributesOperation;
 use DR\Ipp\Operations\PrintOperation;
 use DR\Ipp\Service\PrinterAdminService;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -74,6 +76,28 @@ class IppTest extends TestCase
 
         $mock->expects($this->once())->method('print')->with($printer, $file);
         $this->ipp->print($printer, $file);
+    }
+
+    public function testGetPrinterAttributes(): void
+    {
+        $printer = $this->createMock(IppPrinter::class);
+
+        $mock = $this->createMock(GetPrinterAttributesOperation::class);
+        $this->setPrivateProperty($this->ipp, 'getPrinterAttributes', $mock);
+
+        $mock->expects($this->once())->method('getAttributes')->with($printer);
+        $this->ipp->getPrinterAttributes($printer);
+    }
+
+    public function testGetJobs(): void
+    {
+        $printer = $this->createMock(IppPrinter::class);
+
+        $mock = $this->createMock(GetJobsOperation::class);
+        $this->setPrivateProperty($this->ipp, 'getJobs', $mock);
+
+        $mock->expects($this->once())->method('getJobList')->with($printer);
+        $this->ipp->getJobs($printer);
     }
 
     /**

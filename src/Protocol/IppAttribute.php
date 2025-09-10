@@ -33,6 +33,12 @@ class IppAttribute
         if (is_array($this->value) === false) {
             $this->value = [$this->value];
         }
+        if (is_array($additionalValue)) {
+            $this->value = array_merge($this->value, $additionalValue);
+
+            return;
+        }
+
         $this->value[] = $additionalValue;
     }
 

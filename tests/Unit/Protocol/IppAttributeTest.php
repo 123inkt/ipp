@@ -62,4 +62,12 @@ class IppAttributeTest extends TestCase
 
         static::assertSame(['foo', 'bar'], $attr->getValue());
     }
+
+    public function testAppendValueArray(): void
+    {
+        $attr = new IppAttribute(IppTypeEnum::Keyword, 'test', ['foo']);
+        $attr->appendValue(['bar']);
+
+        static::assertSame(['foo', 'bar'], $attr->getValue());
+    }
 }

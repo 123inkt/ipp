@@ -18,6 +18,9 @@ class IppAttributeStore
 
     public function flush(): void
     {
+        if (count($this->attributes) < 1) {
+            return;
+        }
         $this->attributeCollections[] = $this->attributes;
     }
 
@@ -44,7 +47,11 @@ class IppAttributeStore
         $attributes = [];
         foreach ($this->attributeCollections as $collection) {
             foreach ($collection as $attr) {
-                $attributes = $this->updateAttribute($attributes, $attr);
+                if (array_key_exists($attr->getName(), $attributes)) {
+                    $attributes[$attr->getName()]->appendValue($attr->getValue());
+                } else {
+                    $attributes[$attr->getName()] = $attr;
+                }
             }
         }
         $this->attributeCollections = [];
@@ -64,25 +71,5 @@ class IppAttributeStore
             $this->attributes             = [];
         }
         $this->attributes[$attribute->getName()] = $attribute;
-    }
-
-    /**
-     * @param array<string, IppAttribute> $attributes
-     *
-     * @return array<string, IppAttribute>
-     */
-    private function updateAttribute(array $attributes, IppAttribute $attr): array
-    {
-        if (array_key_exists($attr->getName(), $attributes)) {
-            if (is_array($attr->getValue())) {
-                $attributes[$attr->getName()]->appendValue(...$attr->getValue());
-            } else {
-                $attributes[$attr->getName()]->appendValue($attr->getValue());
-            }
-        } else {
-            $attributes[$attr->getName()] = $attr;
-        }
-
-        return $attributes;
     }
 }

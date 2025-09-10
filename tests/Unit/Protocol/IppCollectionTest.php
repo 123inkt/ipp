@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit\Protocol;
 
-use DigitalRevolution\AccessorPairConstraint\AccessorPairAsserter;
 use DR\Ipp\Protocol\IppCollection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -12,10 +11,13 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(IppCollection::class)]
 class IppCollectionTest extends TestCase
 {
-    use AccessorPairAsserter;
-
     public function test(): void
     {
-        self::assertAccessorPairs(IppCollection::class);
+        $collection = new IppCollection();
+        static::assertCount(0, $collection->getValues());
+
+        $collection->add('foo', 'bar');
+        static::assertCount(1, $collection->getValues());
+        static::assertSame(['foo' => 'bar'], $collection->getValues());
     }
 }
