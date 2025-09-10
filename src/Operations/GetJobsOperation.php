@@ -41,6 +41,6 @@ class GetJobsOperation
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Keyword, 'requested-attributes', 'all'));
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Keyword, 'which-jobs', $completed ? 'completed' : 'not-completed'));
 
-        return $this->parserFactory->JobResponseParser()->getResponse($this->client->sendRequest($operation));
+        return $this->parserFactory->jobResponseParser()->getResponse($this->client->sendRequest($operation));
     }
 }

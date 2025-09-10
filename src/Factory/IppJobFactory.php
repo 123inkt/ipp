@@ -13,7 +13,7 @@ use DR\Utils\Assert;
 class IppJobFactory
 {
     /**
-     * @param IppAttribute[] $attributes
+     * @param array<IppAttribute|IppAttribute[]> $attributes
      */
     public function create(array $attributes): ?IppJob
     {
@@ -49,7 +49,10 @@ class IppJobFactory
         return $job;
     }
 
-    private function getAttribute($attributes, string $name): ?IppAttribute
+    /**
+     * @param array<IppAttribute|IppAttribute[]>  $attributes
+     */
+    private function getAttribute(array $attributes, string $name): ?IppAttribute
     {
         if (isset($attributes[$name]) && $attributes[$name] instanceof IppAttribute) {
             return $attributes[$name];

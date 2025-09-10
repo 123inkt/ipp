@@ -6,7 +6,6 @@ namespace DR\Ipp\Tests\Unit\Protocol\Response;
 
 use DateTime;
 use DR\Ipp\Entity\IppJob;
-use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppStatusCodeEnum;
 use DR\Ipp\Enum\IppTypeEnum;
@@ -37,8 +36,8 @@ class IppResponseParserTest extends TestCase
         $response->addJobAttribute(new IppAttribute(IppTypeEnum::Keyword, 'status-message', 'ok'));
         $response->addJobAttribute(new IppAttribute(IppTypeEnum::DateTime, 'date', $binaryDate));
 
-        $job = new IppJob();
-        $jobFactory =  $this->createMock(IppJobFactory::class);
+        $job        = new IppJob();
+        $jobFactory = $this->createMock(IppJobFactory::class);
         $jobFactory->method('create')->willReturn($job);
         $parser = new IppResponseParser($jobFactory);
 
@@ -47,14 +46,12 @@ class IppResponseParserTest extends TestCase
         $responseMock = $this->createMock(ResponseInterface::class);
         $responseMock->method('getBody')->willReturn($body);
 
-        /** @var CupsIppResponse $job */
-        $response = $parser->getResponse($responseMock);
-        static::assertSame('ok', $response->getStatusMessage());
-        static::assertSame(IppStatusCodeEnum::SuccessfulOkConflictingAttributes, $response->getStatusCode());
-        static::assertSame([$job], $response->getJobs());
+        $ippResponse = $parser->getResponse($responseMock);
+        static::assertSame('ok', $ippResponse->getStatusMessage());
+        static::assertSame(IppStatusCodeEnum::SuccessfulOkConflictingAttributes, $ippResponse->getStatusCode());
+        static::assertSame([$job], $ippResponse->getJobs());
 
-        $attr = $response->getAttributes();
-        static::assertNotNull($attr);
+        $attr = $ippResponse->getAttributes();
         static::assertCount(7, $attr);
         static::assertArrayHasKey('attributes-charset', $attr);
         static::assertArrayHasKey('attributes-natural-language', $attr);
@@ -94,7 +91,6 @@ class IppResponseParserTest extends TestCase
         $responseMock = $this->createMock(ResponseInterface::class);
         $responseMock->method('getBody')->willReturn($body);
 
-        /** @var CupsIppResponse $job */
         $attributes = $parser->getResponse($responseMock)->getAttributes();
         static::assertArrayHasKey('job-id', $attributes);
         static::assertIsArray($attributes['job-id']);
@@ -107,6 +103,7 @@ class IppResponseParserTest extends TestCase
         static::assertSame(3, $attributes['job-id'][2]->getValue());
 
         static::assertArrayHasKey('job-state', $attributes);
+        static::assertIsArray($attributes['job-state']);
         static::assertArrayHasKey(1, $attributes['job-state']);
         static::assertSame(9, $attributes['job-state'][1]->getValue());
         static::assertArrayHasKey(2, $attributes['job-state']);

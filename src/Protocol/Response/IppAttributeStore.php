@@ -47,16 +47,7 @@ class IppAttributeStore
         $attributes = [];
         foreach ($this->attributeCollections as $index => $collection) {
             foreach ($collection as $attr) {
-                if (array_key_exists($attr->getName(), $attributes)) {
-                    if (is_array($attributes[$attr->getName()]) === false) {
-                        $tmp                                      = $attributes[$attr->getName()];
-                        $attributes[$attr->getName()]             = [];
-                        $attributes[$attr->getName()][$index - 1] = $tmp;
-                    }
-                    $attributes[$attr->getName()][$index] = $attr;
-                } else {
-                    $attributes[$attr->getName()] = $attr;
-                }
+                $this->updateAttribute($attributes, $attr, $index);
             }
         }
 
@@ -75,5 +66,22 @@ class IppAttributeStore
             $this->attributes             = [];
         }
         $this->attributes[$attribute->getName()] = $attribute;
+    }
+
+    /**
+     * @param array<string, IppAttribute|IppAttribute[]> $attributes
+     */
+    private function updateAttribute(array $attributes, IppAttribute $attr, int $index): void
+    {
+        if (array_key_exists($attr->getName(), $attributes)) {
+            if (is_array($attributes[$attr->getName()]) === false) {
+                $tmp                                      = $attributes[$attr->getName()];
+                $attributes[$attr->getName()]             = [];
+                $attributes[$attr->getName()][$index - 1] = $tmp;
+            }
+            $attributes[$attr->getName()][$index] = $attr;
+        } else {
+            $attributes[$attr->getName()] = $attr;
+        }
     }
 }

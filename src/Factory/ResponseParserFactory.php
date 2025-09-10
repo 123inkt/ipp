@@ -18,7 +18,7 @@ class ResponseParserFactory implements ResponseParserFactoryInterface
         return new IppResponseParser(new IppJobFactory());
     }
 
-    public function JobResponseParser(): IppResponseParserInterface
+    public function jobResponseParser(): IppResponseParserInterface
     {
         return new IppGetJobsResponseParser(new IppJobFactory());
     }
