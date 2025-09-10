@@ -7,10 +7,12 @@ namespace DR\Ipp\Tests\Unit\Protocol\Response;
 use DateTime;
 use DR\Ipp\Entity\IppJob;
 use DR\Ipp\Enum\IppOperationEnum;
+use DR\Ipp\Enum\IppOperationTagEnum;
 use DR\Ipp\Enum\IppStatusCodeEnum;
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Factory\IppJobFactory;
 use DR\Ipp\Protocol\IppAttribute;
+use DR\Ipp\Protocol\IppCollection;
 use DR\Ipp\Protocol\IppOperation;
 use DR\Ipp\Protocol\Response\IppResponseParser;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -73,6 +75,44 @@ class IppResponseParserTest extends TestCase
             new IppAttribute(IppTypeEnum::DateTime, 'date', DateTime::createFromFormat('Y-m-d H:i:sO', '2024-04-10 01:01:01+0000')),
             $attr['date'],
         );
+    }
+
+    public function testGetResponseCollection(): void
+    {
+        $name  = 'unit';
+        $value = 'test';
+
+        $binary = (string)new IppOperation(IppOperationEnum::PrintJob);
+        $binary .= pack('c', IppTypeEnum::Collection->value);
+        $binary .= pack('n', strlen($name)) . $name;
+        $binary .= pack('n', 0);
+        $binary .= pack('c', IppTypeEnum::MemberAttributeName->value);
+        $binary .= pack('n', 0);
+        $binary .= pack('n', strlen($name)) . $name;
+        $binary .= pack('c', IppTypeEnum::MemberAttributeName->value);
+        $binary .= pack('n', 0);
+        $binary .= pack('n', strlen($value)) . $value;
+        $binary .= pack('c', IppTypeEnum::EndCollection->value);
+        $binary .= pack('N', 0);
+        $binary .= pack('c', IppOperationTagEnum::AttributeEnd->value);
+
+        $jobFactory = $this->createMock(IppJobFactory::class);
+        $parser     = new IppResponseParser($jobFactory);
+
+        $body = $this->createMock(StreamInterface::class);
+        $body->method('getContents')->willReturn($binary);
+        $responseMock = $this->createMock(ResponseInterface::class);
+        $responseMock->method('getBody')->willReturn($body);
+
+        $ippResponse = $parser->getResponse($responseMock);
+        $attr        = $ippResponse->getAttributes();
+        static::assertCount(1, $attr);
+        static::assertArrayHasKey('unit', $attr);
+        static::assertSame('unit', $attr['unit']->getName());
+        static::assertSame(IppTypeEnum::Collection, $attr['unit']->getType());
+        $collection = $attr['unit']->getValue();
+        static::assertInstanceOf(IppCollection::class, $collection);
+        static::assertSame(['unit' => 'test'], $collection->getValues());
     }
 
     public function testGetResponseDuplicateKeys(): void
