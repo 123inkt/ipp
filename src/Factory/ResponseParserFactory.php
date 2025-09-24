@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Factory;
 
-use DR\Ipp\Protocol\Response\IppAttributeResponseParser;
 use DR\Ipp\Protocol\Response\IppGetJobsResponseParser;
 use DR\Ipp\Protocol\Response\IppGetPrintersResponseParser;
 use DR\Ipp\Protocol\Response\IppResponseParser;

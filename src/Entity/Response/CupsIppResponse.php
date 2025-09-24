@@ -15,9 +15,14 @@ class CupsIppResponse implements IppResponseInterface
     /**
      * @param array<string, IppAttribute> $attributes
      * @param IppJob[]                    $jobs
+     * @param IppPrinter[]                $printers
      */
-    public function __construct(private readonly IppStatusCodeEnum $statusCode, private readonly array $attributes, private readonly array $jobs, private readonly array $printers)
-    {
+    public function __construct(
+        private readonly IppStatusCodeEnum $statusCode,
+        private readonly array $attributes,
+        private readonly array $jobs,
+        private readonly array $printers,
+    ) {
     }
 
     public function getStatusCode(): IppStatusCodeEnum

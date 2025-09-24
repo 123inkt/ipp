@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DR\Ipp\Operations\Cups;
 
 use DR\Ipp\Client\IppHttpClientInterface;
-use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
@@ -24,11 +23,8 @@ class CupsGetPrinters implements LoggerAwareInterface, GetPrintersInterface
 {
     use LoggerAwareTrait;
 
-    public function __construct(
-        private readonly IppServer $server,
-        private readonly IppHttpClientInterface $client,
-        private readonly ResponseParserFactoryInterface $parserFactory,
-    ) {
+    public function __construct(private readonly IppHttpClientInterface $client, private readonly ResponseParserFactoryInterface $parserFactory)
+    {
     }
 
     /**

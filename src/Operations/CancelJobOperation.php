@@ -19,10 +19,8 @@ use Psr\Http\Client\ClientExceptionInterface;
  */
 class CancelJobOperation
 {
-    public function __construct(
-        private readonly IppHttpClientInterface $client,
-        private readonly ResponseParserFactoryInterface $parserFactory,
-    ) {
+    public function __construct(private readonly IppHttpClientInterface $client, private readonly ResponseParserFactoryInterface $parserFactory)
+    {
     }
 
     /**

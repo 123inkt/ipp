@@ -25,8 +25,8 @@ class IppGetPrintersResponseParser extends IppResponseParser
     {
         $state = new IppResponseState($response->getBody()->getContents());
 
-        $statusCode     = $this->parseHeader($state);
-        $collections    = $this->parseAttributes($state)->getAttributes();
+        $statusCode  = $this->parseHeader($state);
+        $collections = $this->parseAttributes($state)->getAttributes();
 
         $printers = [];
         foreach ($collections as $collection) {

@@ -59,7 +59,7 @@ class Ipp implements LoggerAwareInterface
         $this->printerAdmin ??= new PrinterAdminService(
             new CupsCreatePrinter($this->server, $this->httpClient, $this->parserFactory),
             new CupsDeletePrinter($this->server, $this->httpClient, $this->parserFactory),
-            new CupsGetPrinters($this->server, $this->httpClient, $this->parserFactory),
+            new CupsGetPrinters($this->httpClient, $this->parserFactory),
         );
 
         return $this->printerAdmin;
