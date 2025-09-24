@@ -59,8 +59,8 @@ class IppTest extends TestCase
         $mock = $this->createMock(GetJobAttributesOperation::class);
         $this->setPrivateProperty($this->ipp, 'getJobAttributes', $mock);
 
-        $mock->expects($this->once())->method('getJob')->with($job->getUri());
-        $this->ipp->getJobAttributes($job->getUri());
+        $mock->expects($this->once())->method('getJob')->with($job);
+        $this->ipp->getJobAttributes($job);
     }
 
     /**

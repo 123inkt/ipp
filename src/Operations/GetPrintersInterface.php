@@ -12,5 +12,5 @@ interface GetPrintersInterface
     /**
      * @throws ClientExceptionInterface
      */
-    public function getPrinters(): IppResponseInterface;
+    public function get(): IppResponseInterface;
 }

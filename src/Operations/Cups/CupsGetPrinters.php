@@ -34,7 +34,7 @@ class CupsGetPrinters implements LoggerAwareInterface, GetPrintersInterface
     /**
      * @throws ClientExceptionInterface
      */
-    public function getPrinters(): IppResponseInterface
+    public function get(): IppResponseInterface
     {
         $operation = new IppOperation(IppOperationEnum::CupsGetPrinters);
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Charset, 'attributes-charset', 'utf-8'));

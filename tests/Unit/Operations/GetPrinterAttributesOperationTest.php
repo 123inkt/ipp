@@ -23,7 +23,7 @@ class GetPrinterAttributesOperationTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function testGetJobs(): void
+    public function testGetAttributes(): void
     {
         $cups   = 'https://cups';
         $server = new IppServer();
@@ -31,7 +31,7 @@ class GetPrinterAttributesOperationTest extends TestCase
 
         $client        = $this->createMock(IppHttpClientInterface::class);
         $parserFactory = $this->createMock(ResponseParserFactoryInterface::class);
-        $parserFactory->expects($this->once())->method('responseParser');
+        $parserFactory->expects($this->once())->method('printerResponseParser');
 
         $operation       = new GetPrinterAttributesOperation($server, $client, $parserFactory);
         $responseContent = 'test';

@@ -29,6 +29,7 @@ class CupsIppHttpClientTest extends TestCase
         $server->expects($this->once())->method('getUri')->willReturn('https://cups');
         $server->expects($this->once())->method('getUsername')->willReturn('unit');
         $server->expects($this->once())->method('getPassword')->willReturn('test');
+        $server->expects($this->once())->method('hasCredentials')->willReturn(true);
 
         $responseStream = $this->createMock(StreamInterface::class);
         $responseStream->method('getContents')->willReturn('');
@@ -104,7 +105,7 @@ class CupsIppHttpClientTest extends TestCase
         $server->expects($this->once())->method('getUri')->willReturn('https://cups');
 
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->exactly(3))->method('getStatusCode')->willReturn(500);
+        $response->expects($this->exactly(4))->method('getStatusCode')->willReturn(500);
         $response->expects($this->once())->method('getReasonPhrase')->willReturn('Internal server error');
         $response->expects($this->once())->method('getBody')->willReturn($this->createMock(StreamInterface::class));
 

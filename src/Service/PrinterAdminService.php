@@ -41,6 +41,6 @@ class PrinterAdminService
      */
     public function getPrinters(): IppResponseInterface
     {
-        return $this->getPrinters->getPrinters();
+        return $this->getPrinters->get();
     }
 }

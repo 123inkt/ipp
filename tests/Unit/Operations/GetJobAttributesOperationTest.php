@@ -23,7 +23,7 @@ class GetJobAttributesOperationTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function testPrint(): void
+    public function testGetJob(): void
     {
         $cups   = 'https://cups';
         $server = new IppServer();
@@ -31,6 +31,8 @@ class GetJobAttributesOperationTest extends TestCase
 
         $client          = $this->createMock(IppHttpClientInterface::class);
         $parserFactory    = $this->createMock(ResponseParserFactoryInterface::class);
+        $parserFactory->expects($this->once())->method('jobResponseParser');
+
         $print           = new GetJobAttributesOperation($client, $parserFactory);
         $responseContent = 'test';
 
@@ -51,6 +53,6 @@ class GetJobAttributesOperationTest extends TestCase
         }))->willReturn($response);
 
         static::assertIsString($printJob->getUri());
-        $print->getJob($printJob->getUri());
+        $print->getJob($printJob);
     }
 }
