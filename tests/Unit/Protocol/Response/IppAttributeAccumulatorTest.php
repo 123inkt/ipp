@@ -17,55 +17,55 @@ class IppAttributeAccumulatorTest extends TestCase
     {
         $attr = $this->createMock(IppAttribute::class);
 
-        $store = new IppAttributeAccumulator();
-        static::assertCount(0, $store->getAttributes());
+        $accumulator = new IppAttributeAccumulator();
+        static::assertCount(0, $accumulator->getAttributes());
 
-        $store->addAttribute($attr);
-        $store->flush();
+        $accumulator->addAttribute($attr);
+        $accumulator->flush();
 
-        static::assertCount(1, $store->getAttributes());
+        static::assertCount(1, $accumulator->getAttributes());
     }
 
     public function testStoreAttributeDuplicate(): void
     {
         $attr = new IppAttribute(IppTypeEnum::Int, 'foo', 0);
 
-        $store = new IppAttributeAccumulator();
-        static::assertCount(0, $store->getAttributes());
+        $accumulator = new IppAttributeAccumulator();
+        static::assertCount(0, $accumulator->getAttributes());
 
-        $store->addAttribute($attr);
-        $store->addAttribute($attr);
-        $store->flush();
+        $accumulator->addAttribute($attr);
+        $accumulator->addAttribute($attr);
+        $accumulator->flush();
 
-        static::assertCount(2, $store->getAttributes());
-        static::assertCount(1, $store->getNormalizedAttributes());
+        static::assertCount(2, $accumulator->getAttributes());
+        static::assertCount(1, $accumulator->getNormalizedAttributes());
     }
 
     public function testStoreAttributeDuplicateArray(): void
     {
         $attr = new IppAttribute(IppTypeEnum::Keyword, 'foo', ['unit', 'test']);
 
-        $store = new IppAttributeAccumulator();
-        static::assertCount(0, $store->getAttributes());
+        $accumulator = new IppAttributeAccumulator();
+        static::assertCount(0, $accumulator->getAttributes());
 
-        $store->addAttribute($attr);
-        $store->addAttribute($attr);
-        $store->flush();
+        $accumulator->addAttribute($attr);
+        $accumulator->addAttribute($attr);
+        $accumulator->flush();
 
-        static::assertCount(2, $store->getAttributes());
-        $normalized = $store->getNormalizedAttributes();
+        static::assertCount(2, $accumulator->getAttributes());
+        $normalized = $accumulator->getNormalizedAttributes();
         static::assertCount(1, $normalized);
         static::assertSame(['unit', 'test', 'unit', 'test'], $normalized['foo']->getValue());
     }
 
     public function testStoreAttributeNull(): void
     {
-        $store = new IppAttributeAccumulator();
-        static::assertCount(0, $store->getAttributes());
+        $accumulator = new IppAttributeAccumulator();
+        static::assertCount(0, $accumulator->getAttributes());
 
-        $store->addAttribute(null);
-        $store->flush();
+        $accumulator->addAttribute(null);
+        $accumulator->flush();
 
-        static::assertCount(0, $store->getAttributes());
+        static::assertCount(0, $accumulator->getAttributes());
     }
 }
