@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Enum;
 
-// phpcs:ignore SlevomatCodingStandard.Files.FileLength.FileTooLong
+// phpcs:ignore
 enum PrinterStateReasonEnum: string
 {
     case AlertRemovalOfBinaryChangeEntry = 'alert-removal-of-binary-change-entry';
