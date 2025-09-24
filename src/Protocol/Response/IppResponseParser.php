@@ -10,6 +10,7 @@ use DR\Ipp\Enum\IppOperationTagEnum;
 use DR\Ipp\Enum\IppStatusCodeEnum;
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Factory\IppJobFactory;
+use DR\Ipp\Normalizer\IppAttributeCollectionNormalizer;
 use DR\Ipp\Protocol\IppAttribute;
 use DR\Ipp\Protocol\IppCollection;
 use Psr\Http\Message\ResponseInterface;
@@ -34,7 +35,7 @@ class IppResponseParser implements IppResponseParserInterface
 
         $statusCode     = $this->parseHeader($state);
         $attributeStore = $this->parseAttributes($state);
-        $attributes     = $attributeStore->getNormalizedAttributes();
+        $attributes     = IppAttributeCollectionNormalizer::getNormalizedAttributes($attributeStore->getAttributes());
         $job            = $this->jobFactory->create($attributes);
         $jobs           = $job === null ? [] : [$job];
 
