@@ -6,13 +6,17 @@ namespace DR\Ipp\Protocol\Response;
 
 use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Entity\Response\IppResponseInterface;
+use DR\Ipp\Factory\IppJobFactory;
+use DR\Ipp\Factory\IppPrinterFactory;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * @internal
- */
-class IppGetJobsResponseParser extends IppResponseParser
+class IppGetPrintersResponseParser extends IppResponseParser
 {
+    public function __construct(private readonly IppPrinterFactory $printerFactory)
+    {
+        parent::__construct(new IppJobFactory());
+    }
+
     /**
      * @see https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1
      */
@@ -21,17 +25,16 @@ class IppGetJobsResponseParser extends IppResponseParser
         $state = new IppResponseState($response->getBody()->getContents());
 
         $statusCode     = $this->parseHeader($state);
-        $attributeStore = $this->parseAttributes($state);
-        $collections    = $attributeStore->getAttributes();
+        $collections    = $this->parseAttributes($state)->getAttributes();
 
-        $jobs = [];
+        $printers = [];
         foreach ($collections as $collection) {
-            $job = $this->jobFactory->create($collection);
-            if ($job !== null) {
-                $jobs[] = $job;
+            $printer = $this->printerFactory->create($collection);
+            if ($printer !== null) {
+                $printers[] = $printer;
             }
         }
 
-        return new CupsIppResponse($statusCode, [], $jobs, []);
+        return new CupsIppResponse($statusCode, [], [], $printers);
     }
 }

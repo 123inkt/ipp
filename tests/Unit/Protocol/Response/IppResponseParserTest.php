@@ -116,7 +116,7 @@ class IppResponseParserTest extends TestCase
         $binary .= pack('c', IppTypeEnum::MemberAttributeName->value);
         $binary .= pack('n', 0);
         $binary .= pack('n', strlen($name)) . $name;
-        $binary .= pack('c', IppTypeEnum::MemberAttributeName->value);
+        $binary .= pack('c', IppTypeEnum::Keyword->value);
         $binary .= pack('n', 0);
         $binary .= pack('n', strlen($value)) . $value;
         $binary .= pack('c', IppTypeEnum::EndCollection->value);
@@ -139,7 +139,7 @@ class IppResponseParserTest extends TestCase
         static::assertSame(IppTypeEnum::Collection, $attr['unit']->getType());
         $collection = $attr['unit']->getValue();
         static::assertInstanceOf(IppCollection::class, $collection);
-        static::assertSame(['unit' => 'test'], $collection->getValues());
+        static::assertEquals([new IppAttribute(IppTypeEnum::Keyword, 'unit', 'test')], $collection->getValues());
     }
 
     public function testGetResponseDuplicateKeys(): void

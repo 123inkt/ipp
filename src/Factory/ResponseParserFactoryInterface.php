@@ -11,4 +11,6 @@ interface ResponseParserFactoryInterface
     public function responseParser(): IppResponseParserInterface;
 
     public function jobResponseParser(): IppResponseParserInterface;
+
+    public function printerResponseParser(): IppResponseParserInterface;
 }

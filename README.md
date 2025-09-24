@@ -43,6 +43,11 @@ composer require digitalrevolution/ipp
     $updatedPrintJob = $ipp->getJobAttributes($printJob->getJobUri());
 ```
 
+### Get all printers
+```php
+    $ipp->printerAdministration()->getPrinters();
+```
+
 ### Register a printer with cups
 
 ```php
@@ -69,8 +74,7 @@ composer require digitalrevolution/ipp
     $printer->setHostname('my.printer');
 
     $response = $ipp->getPrinterAttributes($printer);
-    $attributes = $response->getAttributes();
-    $printerName = $attributes["printer-name"]->getValue();
+    $printerName = $response->getAttribute("printer-name")?->getValue();
 ```
 
 ### Creating a custom IPP operation

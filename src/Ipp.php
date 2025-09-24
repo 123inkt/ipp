@@ -14,9 +14,12 @@ use DR\Ipp\Factory\PrintOperationFactory;
 use DR\Ipp\Factory\ResponseParserFactory;
 use DR\Ipp\Operations\Cups\CupsCreatePrinter;
 use DR\Ipp\Operations\Cups\CupsDeletePrinter;
+use DR\Ipp\Operations\Cups\CupsGetPpds;
+use DR\Ipp\Operations\Cups\CupsGetPrinters;
 use DR\Ipp\Operations\GetJobAttributesOperation;
 use DR\Ipp\Operations\GetJobsOperation;
 use DR\Ipp\Operations\GetPrinterAttributesOperation;
+use DR\Ipp\Operations\GetPrintersOperation;
 use DR\Ipp\Operations\PrintOperation;
 use DR\Ipp\Service\PrinterAdminService;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -55,6 +58,7 @@ class Ipp implements LoggerAwareInterface
         $this->printerAdmin ??= new PrinterAdminService(
             new CupsCreatePrinter($this->server, $this->httpClient, $this->parserFactory),
             new CupsDeletePrinter($this->server, $this->httpClient, $this->parserFactory),
+            new CupsGetPrinters($this->server, $this->httpClient, $this->parserFactory),
         );
 
         return $this->printerAdmin;

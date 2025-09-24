@@ -7,13 +7,14 @@ namespace DR\Ipp\Factory;
 use DateTimeInterface;
 use DR\Ipp\Entity\IppJob;
 use DR\Ipp\Enum\JobStateEnum;
+use DR\Ipp\Enum\JobStateReasonEnum;
 use DR\Ipp\Protocol\IppAttribute;
 use DR\Utils\Assert;
 
 class IppJobFactory
 {
     /**
-     * @param array<IppAttribute|IppAttribute[]> $attributes
+     * @param IppAttribute[] $attributes
      */
     public function create(array $attributes): ?IppJob
     {
@@ -37,7 +38,7 @@ class IppJobFactory
         $job->setId(Assert::integer($jobId));
         $job->setUri(Assert::string($jobUri));
         $job->setJobState(JobStateEnum::from(Assert::integer($jobState)));
-        $job->setJobStateReason($stateReason === null ? null : Assert::string($stateReason));
+        $job->setJobStateReason(JobStateReasonEnum::from(Assert::string($stateReason)));
         $job->setNumberOfDocuments($nrOfDocuments === null ? null : Assert::integer($nrOfDocuments));
         $job->setUserName($user === null ? null : Assert::string($user));
         $job->setFileSize($fileSize === null ? null : Assert::integer($fileSize));
@@ -50,14 +51,10 @@ class IppJobFactory
     }
 
     /**
-     * @param array<IppAttribute|IppAttribute[]>  $attributes
+     * @param IppAttribute[] $attributes
      */
     private function getAttribute(array $attributes, string $name): ?IppAttribute
     {
-        if (isset($attributes[$name]) && $attributes[$name] instanceof IppAttribute) {
-            return $attributes[$name];
-        }
-
-        return null;
+        return $attributes[$name] ?? null;
     }
 }
