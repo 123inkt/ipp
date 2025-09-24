@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(ResponseParserFactory::class)]
 class ResponseParserFactoryTest extends TestCase
 {
-    public function test(): void
+    public function testClass(): void
     {
         $factory = new ResponseParserFactory();
         static::assertInstanceOf(IppResponseParser::class, $factory->responseParser());

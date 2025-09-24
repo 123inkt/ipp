@@ -23,4 +23,6 @@ interface IppResponseInterface
      * @return array<string, IppAttribute>
      */
     public function getAttributes(): array;
+
+    public function getAttribute(string $name): ?IppAttribute;
 }

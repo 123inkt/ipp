@@ -6,21 +6,21 @@ namespace DR\Ipp\Tests\Unit\Protocol\Response;
 
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Protocol\IppAttribute;
-use DR\Ipp\Protocol\Response\IppAttributeStore;
+use DR\Ipp\Protocol\Response\IppAttributeAccumulator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(IppAttributeStore::class)]
-class IppAttributeStoreTest extends TestCase
+#[CoversClass(IppAttributeAccumulator::class)]
+class IppAttributeAccumulatorTest extends TestCase
 {
     public function testStoreAttribute(): void
     {
         $attr = $this->createMock(IppAttribute::class);
 
-        $store = new IppAttributeStore();
+        $store = new IppAttributeAccumulator();
         static::assertCount(0, $store->getAttributes());
 
-        $store->storeAttribute($attr);
+        $store->addAttribute($attr);
         $store->flush();
 
         static::assertCount(1, $store->getAttributes());
@@ -30,11 +30,11 @@ class IppAttributeStoreTest extends TestCase
     {
         $attr = new IppAttribute(IppTypeEnum::Int, 'foo', 0);
 
-        $store = new IppAttributeStore();
+        $store = new IppAttributeAccumulator();
         static::assertCount(0, $store->getAttributes());
 
-        $store->storeAttribute($attr);
-        $store->storeAttribute($attr);
+        $store->addAttribute($attr);
+        $store->addAttribute($attr);
         $store->flush();
 
         static::assertCount(2, $store->getAttributes());
@@ -45,11 +45,11 @@ class IppAttributeStoreTest extends TestCase
     {
         $attr = new IppAttribute(IppTypeEnum::Keyword, 'foo', ['unit', 'test']);
 
-        $store = new IppAttributeStore();
+        $store = new IppAttributeAccumulator();
         static::assertCount(0, $store->getAttributes());
 
-        $store->storeAttribute($attr);
-        $store->storeAttribute($attr);
+        $store->addAttribute($attr);
+        $store->addAttribute($attr);
         $store->flush();
 
         static::assertCount(2, $store->getAttributes());
@@ -60,10 +60,10 @@ class IppAttributeStoreTest extends TestCase
 
     public function testStoreAttributeNull(): void
     {
-        $store = new IppAttributeStore();
+        $store = new IppAttributeAccumulator();
         static::assertCount(0, $store->getAttributes());
 
-        $store->storeAttribute(null);
+        $store->addAttribute(null);
         $store->flush();
 
         static::assertCount(0, $store->getAttributes());

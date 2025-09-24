@@ -13,7 +13,7 @@ class CupsIppResponse implements IppResponseInterface
 {
     /**
      * @param array<string, IppAttribute> $attributes
-     * @param IppJob[] $jobs
+     * @param IppJob[]                    $jobs
      */
     public function __construct(private readonly IppStatusCodeEnum $statusCode, private readonly array $attributes, private readonly array $jobs)
     {
@@ -49,12 +49,8 @@ class CupsIppResponse implements IppResponseInterface
         return $this->attributes;
     }
 
-    private function getAttribute(string $name): ?IppAttribute
+    public function getAttribute(string $name): ?IppAttribute
     {
-        if (isset($this->attributes[$name]) && $this->attributes[$name] instanceof IppAttribute) {
-            return $this->attributes[$name];
-        }
-
-        return null;
+        return $this->attributes[$name] ?? null;
     }
 }

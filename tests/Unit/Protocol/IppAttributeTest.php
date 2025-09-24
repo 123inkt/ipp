@@ -16,7 +16,7 @@ class IppAttributeTest extends TestCase
 {
     use AccessorPairAsserter;
 
-    public function test(): void
+    public function testAccessorPairs(): void
     {
         self::assertAccessorPairs(IppAttribute::class);
     }

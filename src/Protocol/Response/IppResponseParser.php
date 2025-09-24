@@ -52,9 +52,9 @@ class IppResponseParser implements IppResponseParserInterface
         return IppStatusCodeEnum::tryFrom($status) ?? IppStatusCodeEnum::Unknown;
     }
 
-    protected function parseAttributes(IppResponseState $state): IppAttributeStore
+    protected function parseAttributes(IppResponseState $state): IppAttributeAccumulator
     {
-        $attributeStore = new IppAttributeStore();
+        $attributeStore = new IppAttributeAccumulator();
 
         $attributesTags = [
             IppOperationTagEnum::JobAttributeStart->value,
@@ -67,7 +67,7 @@ class IppResponseParser implements IppResponseParserInterface
                 $state->consume(1, null);
             }
 
-            $attributeStore->storeAttribute($this->getAttribute($state));
+            $attributeStore->addAttribute($this->getAttribute($state));
         }
         $attributeStore->flush();
 

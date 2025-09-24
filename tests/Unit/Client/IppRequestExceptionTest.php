@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(IppRequestException::class)]
 class IppRequestExceptionTest extends TestCase
 {
-    public function test(): void
+    public function testConstruct(): void
     {
         $request  = new Request('GET', '');
         $response = new Response();

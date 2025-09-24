@@ -14,7 +14,7 @@ class IppResolutionTest extends TestCase
 {
     use AccessorPairAsserter;
 
-    public function test(): void
+    public function testAccessorPairs(): void
     {
         self::assertAccessorPairs(IppResolution::class);
     }

@@ -9,7 +9,7 @@ use DR\Ipp\Protocol\IppAttribute;
 /**
  * @internal
  */
-class IppAttributeStore
+class IppAttributeAccumulator
 {
     /** @var IppAttribute[][] */
     private array $attributeCollections = [];
@@ -59,7 +59,7 @@ class IppAttributeStore
         return $attributes;
     }
 
-    public function storeAttribute(?IppAttribute $attribute): void
+    public function addAttribute(?IppAttribute $attribute): void
     {
         if ($attribute === null) {
             return;

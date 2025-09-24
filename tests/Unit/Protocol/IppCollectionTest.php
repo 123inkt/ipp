@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(IppCollection::class)]
 class IppCollectionTest extends TestCase
 {
-    public function test(): void
+    public function testGetValues(): void
     {
         $collection = new IppCollection();
         static::assertCount(0, $collection->getValues());

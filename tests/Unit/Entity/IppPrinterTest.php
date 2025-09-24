@@ -14,7 +14,7 @@ class IppPrinterTest extends TestCase
 {
     use AccessorPairAsserter;
 
-    public function test(): void
+    public function testAccessorPairs(): void
     {
         self::assertAccessorPairs(IppPrinter::class);
     }
