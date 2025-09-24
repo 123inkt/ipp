@@ -27,4 +27,12 @@ class IppAttributeCollectionNormalizerTest extends TestCase
         $normalized = IppAttributeCollectionNormalizer::getNormalizedAttributes([[$attr, $attr]]);
         static::assertSame(['unit', 'test', 'unit', 'test'], $normalized['foo']->getValue());
     }
+
+    public function testAttributeCollectionNotChanged(): void
+    {
+        $attr = new IppAttribute(IppTypeEnum::Int, 'foo', 0);
+        IppAttributeCollectionNormalizer::getNormalizedAttributes([[$attr, $attr]]);
+
+        static::assertEquals(new IppAttribute(IppTypeEnum::Int, 'foo', 0), $attr);
+    }
 }
