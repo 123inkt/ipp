@@ -15,6 +15,9 @@ class IppAttributeCollectionNormalizer
      *      'job-id' => IppAttribute(IppTypeEnum::Int, 'job-id', 1),
      *      'supported-formats' => IppAttribute(IppTypeEnum::Keyword, 'supported-formats', ['png', 'pdf']),
      * ]
+     *
+     * @param IppAttribute[][] $attributeCollections
+     *
      * @return array<string, IppAttribute>
      */
     public static function getNormalizedAttributes(array $attributeCollections): array

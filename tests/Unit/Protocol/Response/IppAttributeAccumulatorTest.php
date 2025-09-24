@@ -35,4 +35,18 @@ class IppAttributeAccumulatorTest extends TestCase
 
         static::assertCount(0, $accumulator->getAttributes());
     }
+
+    public function testStartNewCollection(): void
+    {
+        $attr = $this->createMock(IppAttribute::class);
+        $attr->method('getName')->willReturn('unit');
+
+        $accumulator = new IppAttributeAccumulator();
+
+        $accumulator->addAttribute($attr);
+        $accumulator->addAttribute($attr);
+        $accumulator->flush();
+
+        static::assertCount(2, $accumulator->getAttributes());
+    }
 }
