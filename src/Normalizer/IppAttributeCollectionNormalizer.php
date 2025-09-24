@@ -23,7 +23,7 @@ class IppAttributeCollectionNormalizer
     public static function getNormalizedAttributes(array $attributeCollections): array
     {
         $attributes = [];
-        foreach ($attributeCollections as $collection) {
+        foreach (self::clone($attributeCollections) as $collection) {
             foreach ($collection as $attr) {
                 if (array_key_exists($attr->getName(), $attributes)) {
                     $attributes[$attr->getName()]->appendValue($attr->getValue());
@@ -34,5 +34,18 @@ class IppAttributeCollectionNormalizer
         }
 
         return $attributes;
+    }
+
+    /**
+     * @param IppAttribute[][] $attributeCollections
+     *
+     * @return IppAttribute[][]
+     */
+    private static function clone(array $attributeCollections): array
+    {
+        return array_map(
+            static fn(array $collection) => array_map(static fn(IppAttribute $attr) => clone $attr, $collection),
+            $attributeCollections,
+        );
     }
 }

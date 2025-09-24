@@ -22,8 +22,7 @@ class IppGetJobsResponseParser extends IppResponseParser
         $state = new IppResponseState($response->getBody()->getContents());
 
         $statusCode     = $this->parseHeader($state);
-        $attributeStore = $this->parseAttributes($state);
-        $collections    = $attributeStore->getAttributes();
+        $collections    = $this->parseAttributes($state)->getAttributes();
 
         $jobs = [];
         foreach ($collections as $collection) {
