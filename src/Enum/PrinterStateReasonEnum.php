@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Enum;
 
-// phpcs:disable
+// phpcs:ignoreFile
 enum PrinterStateReasonEnum: string
 {
     case AlertRemovalOfBinaryChangeEntry = 'alert-removal-of-binary-change-entry';
@@ -825,4 +825,3 @@ enum PrinterStateReasonEnum: string
     case WrapperUnrecoverableStorageError = 'wrapper-unrecoverable-storage-error';
     case WrapperWarmingUp = 'wrapper-warming-up';
 }
-// phpcs:enable
