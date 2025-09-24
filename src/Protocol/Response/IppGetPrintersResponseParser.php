@@ -8,6 +8,7 @@ use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Factory\IppJobFactory;
 use DR\Ipp\Factory\IppPrinterFactory;
+use DR\Ipp\Normalizer\IppAttributeCollectionNormalizer;
 use Psr\Http\Message\ResponseInterface;
 
 class IppGetPrintersResponseParser extends IppResponseParser
@@ -35,6 +36,6 @@ class IppGetPrintersResponseParser extends IppResponseParser
             }
         }
 
-        return new CupsIppResponse($statusCode, [], [], $printers);
+        return new CupsIppResponse($statusCode, IppAttributeCollectionNormalizer::getNormalizedAttributes($collections), [], $printers);
     }
 }

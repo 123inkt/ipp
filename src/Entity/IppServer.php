@@ -45,4 +45,9 @@ class IppServer
 
         return $this;
     }
+
+    public function hasCredentials(): bool
+    {
+        return isset($this->username, $this->password);
+    }
 }

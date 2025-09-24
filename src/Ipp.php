@@ -6,20 +6,20 @@ namespace DR\Ipp;
 
 use DR\Ipp\Client\CupsIppHttpClient;
 use DR\Ipp\Client\IppHttpClientInterface;
+use DR\Ipp\Entity\IppJob;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Factory\PrintOperationFactory;
 use DR\Ipp\Factory\ResponseParserFactory;
+use DR\Ipp\Operations\CancelJobOperation;
 use DR\Ipp\Operations\Cups\CupsCreatePrinter;
 use DR\Ipp\Operations\Cups\CupsDeletePrinter;
-use DR\Ipp\Operations\Cups\CupsGetPpds;
 use DR\Ipp\Operations\Cups\CupsGetPrinters;
 use DR\Ipp\Operations\GetJobAttributesOperation;
 use DR\Ipp\Operations\GetJobsOperation;
 use DR\Ipp\Operations\GetPrinterAttributesOperation;
-use DR\Ipp\Operations\GetPrintersOperation;
 use DR\Ipp\Operations\PrintOperation;
 use DR\Ipp\Service\PrinterAdminService;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -39,6 +39,7 @@ class Ipp implements LoggerAwareInterface
     private ?GetJobAttributesOperation $getJobAttributes = null;
     private ?GetPrinterAttributesOperation $getPrinterAttributes = null;
     private ?GetJobsOperation $getJobs = null;
+    private ?CancelJobOperation $cancelJob = null;
 
     private ?PrinterAdminService $printerAdmin = null;
 
@@ -77,11 +78,11 @@ class Ipp implements LoggerAwareInterface
     /**
      * @throws ClientExceptionInterface
      */
-    public function getJobAttributes(string $jobUri): IppResponseInterface
+    public function getJobAttributes(IppJob $job): IppResponseInterface
     {
         $this->getJobAttributes ??= new GetJobAttributesOperation($this->httpClient, $this->parserFactory);
 
-        return $this->getJobAttributes->getJob($jobUri);
+        return $this->getJobAttributes->getJob($job);
     }
 
     /**
@@ -103,5 +104,15 @@ class Ipp implements LoggerAwareInterface
         $this->getJobs ??= new GetJobsOperation($this->server, $this->httpClient, $this->parserFactory);
 
         return $this->getJobs->getJobList($printer, $completed);
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     */
+    public function cancelJob(IppJob $job): IppResponseInterface
+    {
+        $this->cancelJob ??= new CancelJobOperation($this->httpClient, $this->parserFactory);
+
+        return $this->cancelJob->cancel($job);
     }
 }

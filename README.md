@@ -40,12 +40,18 @@ composer require digitalrevolution/ipp
 
 ```php
     $printJob = $ipp->print($printer, $ippFile)->getJobs()[0];
-    $updatedPrintJob = $ipp->getJobAttributes($printJob->getJobUri());
+    $updatedPrintJob = $ipp->getJobAttributes($printJob)->getJobs()[0];
+```
+
+### Cancel job
+```php
+    $printJob = $ipp->print($printer, $ippFile)->getJobs()[0];
+    $ipp->cancelJob($printJob);
 ```
 
 ### Get all printers
 ```php
-    $ipp->printerAdministration()->getPrinters();
+    $ipp->printerAdministration()->getPrinters()->getPrinters();
 ```
 
 ### Register a printer with cups
