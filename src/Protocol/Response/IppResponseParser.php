@@ -34,8 +34,7 @@ class IppResponseParser implements IppResponseParserInterface
         $state = new IppResponseState($response->getBody()->getContents());
 
         $statusCode     = $this->parseHeader($state);
-        $attributeStore = $this->parseAttributes($state);
-        $attributes     = IppAttributeCollectionNormalizer::getNormalizedAttributes($attributeStore->getAttributes());
+        $attributes     = IppAttributeCollectionNormalizer::getNormalizedAttributes($this->parseAttributes($state)->getAttributes());
         $job            = $this->jobFactory->create($attributes);
         $jobs           = $job === null ? [] : [$job];
 
