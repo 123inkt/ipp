@@ -16,7 +16,7 @@ class IppAttributeTest extends TestCase
 {
     use AccessorPairAsserter;
 
-    public function test(): void
+    public function testAccessorPairs(): void
     {
         self::assertAccessorPairs(IppAttribute::class);
     }
@@ -53,5 +53,21 @@ class IppAttributeTest extends TestCase
         $binary = (string)$attr;
 
         static::assertSame($binary, pack('c*', 0x44, 0x00, 0x03) . 'foo' . pack('c*', 0x00, 0x03) . 'bar');
+    }
+
+    public function testAppendValue(): void
+    {
+        $attr = new IppAttribute(IppTypeEnum::Keyword, 'test', 'foo');
+        $attr->appendValue('bar');
+
+        static::assertSame(['foo', 'bar'], $attr->getValue());
+    }
+
+    public function testAppendValueArray(): void
+    {
+        $attr = new IppAttribute(IppTypeEnum::Keyword, 'test', ['foo']);
+        $attr->appendValue(['bar']);
+
+        static::assertSame(['foo', 'bar'], $attr->getValue());
     }
 }

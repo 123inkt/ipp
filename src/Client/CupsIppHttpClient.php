@@ -5,32 +5,27 @@ declare(strict_types=1);
 namespace DR\Ipp\Client;
 
 use DR\Ipp\Entity\IppServer;
-use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Protocol\IppOperation;
-use DR\Ipp\Protocol\IppResponseParserInterface;
 use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class CupsIppHttpClient implements IppHttpClientInterface
 {
     private const int HTTP_STATUS_SERVER_ERROR = 500;
 
-    public function __construct(
-        private readonly IppServer $server,
-        private readonly ClientInterface $client,
-        private readonly IppResponseParserInterface $parser,
-    ) {
+    public function __construct(private readonly IppServer $server, private readonly ClientInterface $client)
+    {
     }
 
     /**
      * @param IppOperation $operation
      *
-     * @return IppResponseInterface
      * @throws ClientExceptionInterface
      */
-    public function sendRequest(IppOperation $operation): IppResponseInterface
+    public function sendRequest(IppOperation $operation): ResponseInterface
     {
         if ($operation->getOperation()->value >= IppOperationEnum::CupsGetDefault->value) {
             $request = new Request(
@@ -58,6 +53,6 @@ class CupsIppHttpClient implements IppHttpClientInterface
             throw new IppRequestException($request, $response);
         }
 
-        return $this->parser->getResponse($response->getBody()->getContents());
+        return $response;
     }
 }

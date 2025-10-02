@@ -10,6 +10,7 @@ use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
+use DR\Ipp\Factory\ResponseParserFactoryInterface;
 use DR\Ipp\Operations\CreatePrinterInterface;
 use DR\Ipp\Protocol\IppAttribute;
 use DR\Ipp\Protocol\IppOperation;
@@ -22,8 +23,11 @@ class CupsCreatePrinter implements CreatePrinterInterface
 {
     public const IDLE = 0x03;
 
-    public function __construct(private readonly IppServer $server, private readonly IppHttpClientInterface $client)
-    {
+    public function __construct(
+        private readonly IppServer $server,
+        private readonly IppHttpClientInterface $client,
+        private readonly ResponseParserFactoryInterface $parserFactory,
+    ) {
     }
 
     /**
@@ -48,6 +52,6 @@ class CupsCreatePrinter implements CreatePrinterInterface
             $operation->addPrinterAttribute(new IppAttribute(IppTypeEnum::NameWithoutLang, 'ppd-name', $printer->getPpdName()));
         }
 
-        return $this->client->sendRequest($operation);
+        return $this->parserFactory->responseParser()->getResponse($this->client->sendRequest($operation));
     }
 }

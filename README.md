@@ -39,7 +39,7 @@ composer require digitalrevolution/ipp
 ### Fetch job attributes
 
 ```php
-    $printJob = $ipp->print($printer, $ippFile);
+    $printJob = $ipp->print($printer, $ippFile)->getJobs()[0];
     $updatedPrintJob = $ipp->getJobAttributes($printJob->getJobUri());
 ```
 
@@ -82,8 +82,10 @@ Finally sending the request and parsing the response using the standard parser.
 ```php
 class MyOperation
 {
-    public function __construct(private readonly IppHttpClientInterface $client)
-    {
+    public function __construct(
+        private readonly IppHttpClientInterface $client,
+        private readonly ResponseParserFactoryInterface $parserFactory,
+    ) {
     }
     
     public function myOperation(): IppResponseInterface
@@ -92,7 +94,7 @@ class MyOperation
         
         // set your attributes
         
-        return $this->client->sendRequest($operation);
+        return $this->parserFactory->responseParser()->getResponse($this->client->sendRequest($operation));
     }
 }
 ```

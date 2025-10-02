@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit;
 
+use DR\Ipp\Entity\IppJob;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
-use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Ipp;
 use DR\Ipp\Operations\GetJobAttributesOperation;
+use DR\Ipp\Operations\GetJobsOperation;
+use DR\Ipp\Operations\GetPrinterAttributesOperation;
 use DR\Ipp\Operations\PrintOperation;
 use DR\Ipp\Service\PrinterAdminService;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -51,13 +53,14 @@ class IppTest extends TestCase
      */
     public function testGetJobAttributes(): void
     {
-        $job = $this->createMock(IppResponseInterface::class);
+        $job = new IppJob();
+        $job->setUri('my-uri');
 
         $mock = $this->createMock(GetJobAttributesOperation::class);
         $this->setPrivateProperty($this->ipp, 'getJobAttributes', $mock);
 
-        $mock->expects($this->once())->method('getJob')->with($job->getJobUri() ?? '');
-        $this->ipp->getJobAttributes($job->getJobUri() ?? '');
+        $mock->expects($this->once())->method('getJob')->with($job->getUri());
+        $this->ipp->getJobAttributes($job->getUri());
     }
 
     /**
@@ -73,6 +76,28 @@ class IppTest extends TestCase
 
         $mock->expects($this->once())->method('print')->with($printer, $file);
         $this->ipp->print($printer, $file);
+    }
+
+    public function testGetPrinterAttributes(): void
+    {
+        $printer = $this->createMock(IppPrinter::class);
+
+        $mock = $this->createMock(GetPrinterAttributesOperation::class);
+        $this->setPrivateProperty($this->ipp, 'getPrinterAttributes', $mock);
+
+        $mock->expects($this->once())->method('getAttributes')->with($printer);
+        $this->ipp->getPrinterAttributes($printer);
+    }
+
+    public function testGetJobs(): void
+    {
+        $printer = $this->createMock(IppPrinter::class);
+
+        $mock = $this->createMock(GetJobsOperation::class);
+        $this->setPrivateProperty($this->ipp, 'getJobs', $mock);
+
+        $mock->expects($this->once())->method('getJobList')->with($printer);
+        $this->ipp->getJobs($printer);
     }
 
     /**

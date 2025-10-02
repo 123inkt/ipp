@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace DR\Ipp\Tests\Unit\Entity;
+namespace DR\Ipp\Tests\Unit\Protocol;
 
 use DigitalRevolution\AccessorPairConstraint\AccessorPairAsserter;
-use DR\Ipp\Entity\IppPrinter;
+use DR\Ipp\Protocol\IppResolution;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(IppPrinter::class)]
-class IppPrinterTest extends TestCase
+#[CoversClass(IppResolution::class)]
+class IppResolutionTest extends TestCase
 {
     use AccessorPairAsserter;
 
     public function testAccessorPairs(): void
     {
-        self::assertAccessorPairs(IppPrinter::class);
+        self::assertAccessorPairs(IppResolution::class);
     }
 }

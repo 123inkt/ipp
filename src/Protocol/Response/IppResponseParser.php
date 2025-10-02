@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
-namespace DR\Ipp\Protocol;
+namespace DR\Ipp\Protocol\Response;
 
 use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationTagEnum;
 use DR\Ipp\Enum\IppStatusCodeEnum;
 use DR\Ipp\Enum\IppTypeEnum;
+use DR\Ipp\Factory\IppJobFactory;
+use DR\Ipp\Normalizer\IppAttributeCollectionNormalizer;
+use DR\Ipp\Protocol\IppAttribute;
+use DR\Ipp\Protocol\IppCollection;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @internal
@@ -17,37 +22,56 @@ class IppResponseParser implements IppResponseParserInterface
 {
     private IppAttribute $lastAttribute;
 
+    public function __construct(protected readonly IppJobFactory $jobFactory)
+    {
+    }
+
     /**
      * @see https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1
      */
-    public function getResponse(string $response): IppResponseInterface
+    public function getResponse(ResponseInterface $response): IppResponseInterface
     {
-        $state = new IppResponseState($response);
+        $state = new IppResponseState($response->getBody()->getContents());
 
+        $statusCode     = $this->parseHeader($state);
+        $attributes     = IppAttributeCollectionNormalizer::getNormalizedAttributes($this->parseAttributes($state)->getAttributes());
+        $job            = $this->jobFactory->create($attributes);
+        $jobs           = $job === null ? [] : [$job];
+
+        return new CupsIppResponse($statusCode, $attributes, $jobs);
+    }
+
+    protected function parseHeader(IppResponseState $state): IppStatusCodeEnum
+    {
         $state->consume(2, IppTypeEnum::Int);            // version   0x0101
         /** @var int $status */
         $status = $state->consume(2, IppTypeEnum::Int);  // status    0x0502
         $state->consume(4, IppTypeEnum::Int);            // requestId 0x00000001
         $state->consume(1, IppTypeEnum::Int);            // IPPOperationTag::OPERATION_ATTRIBUTE_START
 
+        return IppStatusCodeEnum::tryFrom($status) ?? IppStatusCodeEnum::Unknown;
+    }
+
+    protected function parseAttributes(IppResponseState $state): IppAttributeAccumulator
+    {
+        $attributeStore = new IppAttributeAccumulator();
+
         $attributesTags = [
             IppOperationTagEnum::JobAttributeStart->value,
             IppOperationTagEnum::PrinterAttributeStart->value,
             IppOperationTagEnum::UnsupportedAttributes->value,
         ];
-        $attributes     = [];
         while ($state->getNextByte() !== IppOperationTagEnum::AttributeEnd->value) {
             // look for an attribute tag and remove it before parsing further attributes
             if (in_array($state->getNextByte(), $attributesTags, true)) {
                 $state->consume(1, null);
             }
 
-            $attribute = $this->getAttribute($state);
-            $attributes[$attribute->getName()] = $attribute;
+            $attributeStore->addAttribute($this->getAttribute($state));
         }
-        $statusCode = IppStatusCodeEnum::tryFrom($status) ?? IppStatusCodeEnum::Unknown;
+        $attributeStore->flush();
 
-        return new CupsIppResponse($statusCode, $attributes);
+        return $attributeStore;
     }
 
     /**
@@ -69,7 +93,7 @@ class IppResponseParser implements IppResponseParserInterface
 
             /** @var int $valueLength */
             $valueLength = $state->consume(2, IppTypeEnum::Int);
-            $value = $state->consume($valueLength, IppTypeEnum::tryFrom($valueType));
+            $value       = $state->consume($valueLength, IppTypeEnum::tryFrom($valueType));
             $collection->add($name, $value);
         }
         $state->consume(5, null); // 0x37 0x00 0x00 0x00 0x00
@@ -80,21 +104,23 @@ class IppResponseParser implements IppResponseParserInterface
     /**
      * Decodes an attribute from the response, and returns the decoded value(s)
      */
-    private function getAttribute(IppResponseState $state): IppAttribute
+    private function getAttribute(IppResponseState $state): ?IppAttribute
     {
         /** @var int $type */
-        $type = $state->consume(1, null);
+        $type     = $state->consume(1, null);
         $attrType = IppTypeEnum::tryFrom($type);
 
         /** @var int $nameLength */
         $nameLength = $state->consume(2, IppTypeEnum::Int);
         // Additional value https://datatracker.ietf.org/doc/html/rfc8010/#section-3.1.5
         if ($nameLength === 0x0000) {
-            return $this->lastAttribute->appendValue($this->getAttributeValue($attrType, $state));
+            $this->lastAttribute->appendValue($this->getAttributeValue($attrType, $state));
+
+            return null;
         }
 
         /** @var string $attrName */
-        $attrName = $state->consume($nameLength, IppTypeEnum::NameWithoutLang);
+        $attrName  = $state->consume($nameLength, IppTypeEnum::NameWithoutLang);
         $attrValue = $this->getAttributeValue($attrType, $state);
 
         $this->lastAttribute = new IppAttribute($attrType ?? IppTypeEnum::Int, $attrName, $attrValue);
