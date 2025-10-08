@@ -27,8 +27,8 @@ class IppPrinterFactory
         $printer->setLocation(Assert::string($this->getAttribute($attributes, 'printer-location')?->getValue()));
         $printer->setDeviceUri(Assert::string($this->getAttribute($attributes, 'device-uri')?->getValue()));
         $printer->setPrinterState(PrinterStateEnum::from(Assert::integer($this->getAttribute($attributes, 'printer-state')?->getValue())));
-        $stateReason = PrinterStateReasonEnum::from(Assert::string($this->getAttribute($attributes, 'printer-state-reasons')?->getValue()));
-        $printer->setPrinterStateReason($stateReason);
+        $stateReason = PrinterStateReasonEnum::tryFrom(Assert::string($this->getAttribute($attributes, 'printer-state-reasons')?->getValue()));
+        $printer->setPrinterStateReason($stateReason ?? PrinterStateReasonEnum::Unknown);
         $printerType = $this->getAttribute($attributes, 'printer-make-and-model')?->getValue();
         $printer->setPrinterType($printerType === null ? null : Assert::string($printerType));
 

@@ -38,7 +38,7 @@ class IppJobFactory
         $job->setId(Assert::integer($jobId));
         $job->setUri(Assert::string($jobUri));
         $job->setJobState(JobStateEnum::from(Assert::integer($jobState)));
-        $job->setJobStateReason(JobStateReasonEnum::from(Assert::string($stateReason)));
+        $job->setJobStateReason(JobStateReasonEnum::tryFrom(Assert::string($stateReason)) ?? JobStateReasonEnum::Unknown);
         $job->setNumberOfDocuments($nrOfDocuments === null ? null : Assert::integer($nrOfDocuments));
         $job->setUserName($user === null ? null : Assert::string($user));
         $job->setFileSize($fileSize === null ? null : Assert::integer($fileSize));

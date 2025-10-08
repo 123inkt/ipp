@@ -91,6 +91,7 @@ enum PrinterStateReasonEnum: string
     case ConfigurationChange = 'configuration-change';
     case ConnectingToDevice = 'connecting-to-device';
     case CoverOpen = 'cover-open';
+    case CupsMissingFilterWarning = 'cups-missing-filter-warning';
     case Deactivated = 'deactivated';
     case Deleted = 'deleted';
     case DeveloperEmpty = 'developer-empty';
@@ -352,7 +353,9 @@ enum PrinterStateReasonEnum: string
     case MarkerWasteTonerReceptacleMissing = 'marker-waste-toner-receptacle-missing';
     case MediaDrying = 'media-drying';
     case MediaEmpty = 'media-empty';
+    case MediaEmptyWarning = 'media-empty-warning';
     case MediaJam = 'media-jam';
+    case MediaJamWarning = 'media-jam-warning';
     case MediaLow = 'media-low';
     case MediaNeeded = 'media-needed';
     case MediaPathCannotDuplexMediaSelected = 'media-path-cannot-duplex-media-selected';
@@ -377,7 +380,9 @@ enum PrinterStateReasonEnum: string
     case None = 'none';
     case Offline = 'offline';
     case OpcLifeOver = 'opc-life-over';
+    case OpcLifeOverWarning = 'opc-life-over-warning';
     case OpcNearEol = 'opc-near-eol';
+    case OpcNearEolReport = 'opc-near-eol-report';
     case Other = 'other';
     case OutputAreaAlmostFull = 'output-area-almost-full';
     case OutputAreaFull = 'output-area-full';
@@ -751,6 +756,7 @@ enum PrinterStateReasonEnum: string
     case TimedOut = 'timed-out';
     case TonerEmpty = 'toner-empty';
     case TonerLow = 'toner-low';
+    case TonerLowReport = 'toner-low-report';
     case TrimmerAdded = 'trimmer-added';
     case TrimmerAlmostEmpty = 'trimmer-almost-empty';
     case TrimmerAlmostFull = 'trimmer-almost-full';

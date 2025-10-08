@@ -43,4 +43,5 @@ enum JobStateReasonEnum: string
     case QueuedInDevice = 'queued-in-device';
     case ErrorsDetected = 'errors-detected';
     case WarningsDetected = 'warnings-detected';
+    case Unknown = 'unknown';
 }
