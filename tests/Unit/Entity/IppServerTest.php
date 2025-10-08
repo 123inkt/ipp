@@ -25,4 +25,14 @@ class IppServerTest extends TestCase
         $server->setUri('http://example.com/ipp/');
         static::assertSame('http://example.com/ipp', $server->getUri());
     }
+
+    public function testHasCredentials(): void
+    {
+        $server = new IppServer();
+        static::assertFalse($server->hasCredentials());
+        $server->setUsername('a');
+        static::assertFalse($server->hasCredentials());
+        $server->setPassword('b');
+        static::assertTrue($server->hasCredentials());
+    }
 }

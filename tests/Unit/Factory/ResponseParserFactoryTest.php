@@ -18,5 +18,6 @@ class ResponseParserFactoryTest extends TestCase
         $factory = new ResponseParserFactory();
         static::assertInstanceOf(IppResponseParser::class, $factory->responseParser());
         static::assertInstanceOf(IppGetJobsResponseParser::class, $factory->jobResponseParser());
+        static::assertInstanceOf(IppGetJobsResponseParser::class, $factory->printerResponseParser());
     }
 }
