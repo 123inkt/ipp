@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DR\Ipp\Tests\Unit\Protocol;
+namespace DR\Ipp\Tests\Unit\Entity;
 
+use DR\Ipp\Entity\IppCollection;
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Protocol\IppAttribute;
-use DR\Ipp\Protocol\IppCollection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

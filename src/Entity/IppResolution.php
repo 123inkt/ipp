@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DR\Ipp\Protocol;
+namespace DR\Ipp\Entity;
 
 class IppResolution
 {
