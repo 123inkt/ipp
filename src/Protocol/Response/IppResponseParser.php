@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Protocol\Response;
 
+use DR\Ipp\Entity\IppCollection;
 use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationTagEnum;
@@ -12,7 +13,6 @@ use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Factory\IppJobFactory;
 use DR\Ipp\Normalizer\IppAttributeCollectionNormalizer;
 use DR\Ipp\Protocol\IppAttribute;
-use DR\Ipp\Protocol\IppCollection;
 use Psr\Http\Message\ResponseInterface;
 
 /**

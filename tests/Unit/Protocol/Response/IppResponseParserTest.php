@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DR\Ipp\Tests\Unit\Protocol\Response;
 
 use DateTime;
+use DR\Ipp\Entity\IppCollection;
 use DR\Ipp\Entity\IppJob;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppOperationTagEnum;
@@ -12,7 +13,6 @@ use DR\Ipp\Enum\IppStatusCodeEnum;
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Factory\IppJobFactory;
 use DR\Ipp\Protocol\IppAttribute;
-use DR\Ipp\Protocol\IppCollection;
 use DR\Ipp\Protocol\IppOperation;
 use DR\Ipp\Protocol\Response\IppResponseParser;
 use PHPUnit\Framework\Attributes\CoversClass;

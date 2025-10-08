@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DR\Ipp\Protocol\Response;
 
 use DateTime;
+use DR\Ipp\Entity\IppResolution;
 use DR\Ipp\Enum\IppTypeEnum;
-use DR\Ipp\Protocol\IppResolution;
 use DR\Utils\Assert;
 use Nyholm\Psr7\Stream;
 use Psr\Http\Message\StreamInterface;
