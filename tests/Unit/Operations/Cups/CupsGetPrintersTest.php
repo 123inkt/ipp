@@ -8,7 +8,6 @@ use DR\Ipp\Client\IppHttpClientInterface;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Factory\ResponseParserFactoryInterface;
-use DR\Ipp\Operations\Cups\CupsCreatePrinter;
 use DR\Ipp\Operations\Cups\CupsGetPrinters;
 use DR\Ipp\Protocol\IppOperation;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -17,7 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Throwable;
 
-#[CoversClass(CupsCreatePrinter::class)]
+#[CoversClass(CupsGetPrinters::class)]
 class CupsGetPrintersTest extends TestCase
 {
     /**

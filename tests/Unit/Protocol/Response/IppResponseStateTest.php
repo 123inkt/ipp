@@ -102,4 +102,10 @@ class IppResponseStateTest extends TestCase
         $state = new IppResponseState('invalid date unittest');
         $state->consume(11, IppTypeEnum::DateTime);
     }
+
+    public function testConsumeWithLengthZero(): void
+    {
+        $state = new IppResponseState('unittest');
+        static::assertSame('', $state->consume(0, IppTypeEnum::Int));
+    }
 }

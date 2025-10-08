@@ -11,14 +11,13 @@ use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Factory\IppPrinterFactory;
 use DR\Ipp\Protocol\IppAttribute;
 use DR\Ipp\Protocol\IppOperation;
-use DR\Ipp\Protocol\Response\IppGetJobsResponseParser;
 use DR\Ipp\Protocol\Response\IppGetPrintersResponseParser;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
-#[CoversClass(IppGetJobsResponseParser::class)]
+#[CoversClass(IppGetPrintersResponseParser::class)]
 class IppGetPrintersResponseParserTest extends TestCase
 {
     public function testGetResponse(): void
