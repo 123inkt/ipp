@@ -21,7 +21,7 @@ class IppResponseState
 
     public function __construct(string $response)
     {
-        $this->stream = new Stream(Assert::notFalse(fopen('php://temp', 'rb+')));
+        $this->stream = new Stream(Assert::notFalse(fopen('php://memory', 'rb+')));
         $this->stream->write($response);
         $this->stream->rewind();
     }
@@ -56,6 +56,10 @@ class IppResponseState
      */
     private function consumeBytes(string $unpack, int $byteCount): int|string|array
     {
+        if ($byteCount < 1) {
+            return '';
+        }
+
         return str_contains($unpack, '/') ? $this->unpackArray($unpack, $byteCount) : $this->unpackSingleValue($unpack, $byteCount);
     }
 
@@ -112,10 +116,11 @@ class IppResponseState
     private function unpackSingleValue(string $unpack, int $byteCount): string|int
     {
         $data = @unpack($unpack, $this->stream->read($byteCount));
-        if ($data === false || isset($data[1]) === false || (is_string($data[1]) === false && is_int($data[1]) === false)) {
+        if ($data === false) {
             throw new RuntimeException('Failed to parse IPP data');
         }
 
+        /** @phpstan-var string|int */
         return $data[1];
     }
 }
