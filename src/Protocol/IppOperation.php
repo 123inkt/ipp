@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DR\Ipp\Protocol;
 
 use DR\Ipp\Enum\IppOperationEnum;
-use DR\Ipp\Enum\IppOperationTagEnum;
 
 /**
  * @see https://datatracker.ietf.org/doc/html/rfc8010/
@@ -29,6 +28,16 @@ class IppOperation
         private readonly string $version = '2.0',
         private readonly int $requestId = 1,
     ) {
+    }
+
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
+    public function getRequestId(): int
+    {
+        return $this->requestId;
     }
 
     public function getOperation(): IppOperationEnum
@@ -98,27 +107,6 @@ class IppOperation
      */
     public function __toString(): string
     {
-        $versionMajorMinor = explode('.', $this->version);
-
-        $binary = pack('c', $versionMajorMinor[0]) . pack('c', $versionMajorMinor[1]);  // version   0x0200
-        $binary .= pack('n', $this->operation->value);                                  // operation 0x0003
-        $binary .= pack('N', $this->requestId);                                         // requestId 0x00000001
-
-        if (count($this->operationAttributes) > 0) {
-            $binary .= pack('c', IppOperationTagEnum::OperationAttributeStart->value) . implode('', $this->operationAttributes);
-        }
-        if (count($this->printerAttributes) > 0) {
-            $binary .= pack('c', IppOperationTagEnum::PrinterAttributeStart->value) . implode('', $this->printerAttributes);
-        }
-        if (count($this->jobAttributes) > 0) {
-            $binary .= pack('c', IppOperationTagEnum::JobAttributeStart->value) . implode('', $this->jobAttributes);
-        }
-        $binary .= pack('c', IppOperationTagEnum::AttributeEnd->value);
-
-        if ($this->fileData !== null) {
-            $binary .= $this->fileData;
-        }
-
-        return $binary;
+        return IppEncoder::encodeOperation($this);
     }
 }

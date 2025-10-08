@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DR\Ipp\Protocol;
 
 use DR\Ipp\Enum\IppTypeEnum;
-use DR\Utils\Assert;
 
 class IppAttribute
 {
@@ -47,19 +46,6 @@ class IppAttribute
      */
     public function __toString(): string
     {
-        // 1 byte type
-        $binary = pack('c', $this->type->value);
-        // 2 bytes length of attribute name, followed by attribute name.
-        $binary .= pack('n', strlen($this->name)) . $this->name;
-        // 2 bytes value length, followed by the value.
-        if ($this->type === IppTypeEnum::Int || $this->type === IppTypeEnum::Enum) {
-            $binary .= pack('n', 4) . pack('N', $this->value);
-        } elseif ($this->type === IppTypeEnum::Bool) {
-            $binary .= pack('n', 1) . pack('c', (int)Assert::boolean($this->value));
-        } else {
-            $binary .= pack('n', strlen(Assert::string($this->value))) . Assert::string($this->value);
-        }
-
-        return $binary;
+        return IppEncoder::encodeAttribute($this);
     }
 }
