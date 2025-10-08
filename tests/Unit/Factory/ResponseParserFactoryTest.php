@@ -6,6 +6,7 @@ namespace DR\Ipp\Tests\Unit\Factory;
 
 use DR\Ipp\Factory\ResponseParserFactory;
 use DR\Ipp\Protocol\Response\IppGetJobsResponseParser;
+use DR\Ipp\Protocol\Response\IppGetPrintersResponseParser;
 use DR\Ipp\Protocol\Response\IppResponseParser;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +19,6 @@ class ResponseParserFactoryTest extends TestCase
         $factory = new ResponseParserFactory();
         static::assertInstanceOf(IppResponseParser::class, $factory->responseParser());
         static::assertInstanceOf(IppGetJobsResponseParser::class, $factory->jobResponseParser());
-        static::assertInstanceOf(IppGetJobsResponseParser::class, $factory->printerResponseParser());
+        static::assertInstanceOf(IppGetPrintersResponseParser::class, $factory->printerResponseParser());
     }
 }
