@@ -7,6 +7,7 @@ namespace DR\Ipp\Tests\Unit\Service;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Operations\CreatePrinterInterface;
 use DR\Ipp\Operations\DeletePrinterInterface;
+use DR\Ipp\Operations\GetPrintersInterface;
 use DR\Ipp\Service\PrinterAdminService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -18,6 +19,7 @@ class PrinterAdminServiceTest extends TestCase
 {
     private CreatePrinterInterface&MockObject $createPrinter;
     private DeletePrinterInterface&MockObject $deletePrinter;
+    private GetPrintersInterface&MockObject $getPrinters;
     private PrinterAdminService $service;
 
     /**
@@ -27,7 +29,8 @@ class PrinterAdminServiceTest extends TestCase
     {
         $this->createPrinter = $this->createMock(CreatePrinterInterface::class);
         $this->deletePrinter = $this->createMock(DeletePrinterInterface::class);
-        $this->service       = new PrinterAdminService($this->createPrinter, $this->deletePrinter);
+        $this->getPrinters   = $this->createMock(GetPrintersInterface::class);
+        $this->service       = new PrinterAdminService($this->createPrinter, $this->deletePrinter, $this->getPrinters);
     }
 
     /**
@@ -46,5 +49,14 @@ class PrinterAdminServiceTest extends TestCase
     {
         $this->deletePrinter->expects($this->once())->method('delete');
         $this->service->deletePrinter($this->createMock(IppPrinter::class));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function testGetPrinters(): void
+    {
+        $this->getPrinters->expects($this->once())->method('get');
+        $this->service->getPrinters();
     }
 }

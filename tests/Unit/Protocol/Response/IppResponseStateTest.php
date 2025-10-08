@@ -61,13 +61,13 @@ class IppResponseStateTest extends TestCase
         $expected = new IppResolution(1, 2, 3);
 
         $state = new IppResponseState(pack('N2c', 1, 2, 3));
-        static::assertEquals($expected, $state->consume(0, IppTypeEnum::Resolution));
+        static::assertEquals($expected, $state->consume(9, IppTypeEnum::Resolution));
     }
 
     public function testConsumeIntRange(): void
     {
         $state = new IppResponseState(pack('N2', 1, 2));
-        static::assertSame([1, 2], $state->consume(0, IppTypeEnum::IntRange));
+        static::assertSame([1, 2], $state->consume(8, IppTypeEnum::IntRange));
     }
 
     public function testConsumeWithoutType(): void
@@ -101,5 +101,11 @@ class IppResponseStateTest extends TestCase
         $this->expectException(RuntimeException::class);
         $state = new IppResponseState('invalid date unittest');
         $state->consume(11, IppTypeEnum::DateTime);
+    }
+
+    public function testConsumeWithLengthZero(): void
+    {
+        $state = new IppResponseState('unittest');
+        static::assertSame('', $state->consume(0, IppTypeEnum::Int));
     }
 }

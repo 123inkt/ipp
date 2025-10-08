@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DR\Ipp\Factory;
 
 use DR\Ipp\Protocol\Response\IppGetJobsResponseParser;
+use DR\Ipp\Protocol\Response\IppGetPrintersResponseParser;
 use DR\Ipp\Protocol\Response\IppResponseParser;
 use DR\Ipp\Protocol\Response\IppResponseParserInterface;
 
@@ -21,5 +22,10 @@ class ResponseParserFactory implements ResponseParserFactoryInterface
     public function jobResponseParser(): IppResponseParserInterface
     {
         return new IppGetJobsResponseParser(new IppJobFactory());
+    }
+
+    public function printerResponseParser(): IppResponseParserInterface
+    {
+        return new IppGetPrintersResponseParser(new IppPrinterFactory());
     }
 }

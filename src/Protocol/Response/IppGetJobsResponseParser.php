@@ -6,6 +6,7 @@ namespace DR\Ipp\Protocol\Response;
 
 use DR\Ipp\Entity\Response\CupsIppResponse;
 use DR\Ipp\Entity\Response\IppResponseInterface;
+use DR\Ipp\Normalizer\IppAttributeCollectionNormalizer;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -31,6 +32,6 @@ class IppGetJobsResponseParser extends IppResponseParser
             }
         }
 
-        return new CupsIppResponse($statusCode, [], $jobs);
+        return new CupsIppResponse($statusCode, IppAttributeCollectionNormalizer::getNormalizedAttributes($collections), $jobs, []);
     }
 }

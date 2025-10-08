@@ -14,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class CupsIppHttpClient implements IppHttpClientInterface
 {
+    private const int HTTP_STATUS_UNAUTHORIZED = 401;
     private const int HTTP_STATUS_SERVER_ERROR = 500;
 
     public function __construct(private readonly IppServer $server, private readonly ClientInterface $client)
@@ -28,28 +29,20 @@ class CupsIppHttpClient implements IppHttpClientInterface
     public function sendRequest(IppOperation $operation): ResponseInterface
     {
         if ($operation->getOperation()->value >= IppOperationEnum::CupsGetDefault->value) {
-            $request = new Request(
-                'POST',
-                $this->server->getUri() . '/admin',
-                [
-                    'Content-Type'  => 'application/ipp',
-                    'Authorization' => 'Basic ' . base64_encode($this->server->getUsername() . ":" . $this->server->getPassword()),
-                ],
-                (string)$operation,
-            );
+            $url = $this->server->getUri() . '/admin';
         } else {
-            $request = new Request(
-                'POST',
-                $this->server->getUri(),
-                ['Content-Type' => 'application/ipp'],
-                (string)$operation,
-            );
+            $url = $this->server->getUri();
         }
 
+        $headers = ['Content-Type' => 'application/ipp'];
+        if ($this->server->hasCredentials()) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->server->getUsername() . ":" . $this->server->getPassword());
+        }
+        $request  = new Request('POST', $url, $headers, (string)$operation);
         $response = $this->client->sendRequest($request);
 
         // a server error won't be an ipp response we can parse.
-        if ($response->getStatusCode() >= self::HTTP_STATUS_SERVER_ERROR) {
+        if ($response->getStatusCode() === self::HTTP_STATUS_UNAUTHORIZED || $response->getStatusCode() >= self::HTTP_STATUS_SERVER_ERROR) {
             throw new IppRequestException($request, $response);
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DR\Ipp\Entity\Response;
 
 use DR\Ipp\Entity\IppJob;
+use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Enum\IppStatusCodeEnum;
 use DR\Ipp\Protocol\IppAttribute;
 
@@ -18,6 +19,11 @@ interface IppResponseInterface
      * @return IppJob[]
      */
     public function getJobs(): array;
+
+    /**
+     * @return IppPrinter[]
+     */
+    public function getPrinters(): array;
 
     /**
      * @return array<string, IppAttribute>

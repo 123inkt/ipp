@@ -6,16 +6,16 @@ namespace DR\Ipp\Protocol;
 
 class IppCollection
 {
-    /** @var array<string, mixed> */
+    /** @var IppAttribute[] */
     private array $values = [];
 
-    public function add(string $name, mixed $value): void
+    public function add(IppAttribute $attribute): void
     {
-        $this->values[$name] = $value;
+        $this->values[] = $attribute;
     }
 
     /**
-     * @return array<string, mixed>
+     * @return IppAttribute[]
      */
     public function getValues(): array
     {

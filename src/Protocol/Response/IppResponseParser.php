@@ -33,12 +33,12 @@ class IppResponseParser implements IppResponseParserInterface
     {
         $state = new IppResponseState($response->getBody()->getContents());
 
-        $statusCode     = $this->parseHeader($state);
-        $attributes     = IppAttributeCollectionNormalizer::getNormalizedAttributes($this->parseAttributes($state)->getAttributes());
-        $job            = $this->jobFactory->create($attributes);
-        $jobs           = $job === null ? [] : [$job];
+        $statusCode = $this->parseHeader($state);
+        $attributes = IppAttributeCollectionNormalizer::getNormalizedAttributes($this->parseAttributes($state)->getAttributes());
+        $job        = $this->jobFactory->create($attributes);
+        $jobs       = $job === null ? [] : [$job];
 
-        return new CupsIppResponse($statusCode, $attributes, $jobs);
+        return new CupsIppResponse($statusCode, $attributes, $jobs, []);
     }
 
     protected function parseHeader(IppResponseState $state): IppStatusCodeEnum
@@ -47,7 +47,7 @@ class IppResponseParser implements IppResponseParserInterface
         /** @var int $status */
         $status = $state->consume(2, IppTypeEnum::Int);  // status    0x0502
         $state->consume(4, IppTypeEnum::Int);            // requestId 0x00000001
-        $state->consume(1, IppTypeEnum::Int);            // IPPOperationTag::OPERATION_ATTRIBUTE_START
+        $state->consume(1, null);                        // IppOperationTagEnum::OPERATION_ATTRIBUTE_START
 
         return IppStatusCodeEnum::tryFrom($status) ?? IppStatusCodeEnum::Unknown;
     }
@@ -94,7 +94,7 @@ class IppResponseParser implements IppResponseParserInterface
             /** @var int $valueLength */
             $valueLength = $state->consume(2, IppTypeEnum::Int);
             $value       = $state->consume($valueLength, IppTypeEnum::tryFrom($valueType));
-            $collection->add($name, $value);
+            $collection->add(new IppAttribute(IppTypeEnum::from($valueType), $name, $value));
         }
         $state->consume(5, null); // 0x37 0x00 0x00 0x00 0x00
 

@@ -9,6 +9,7 @@ use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
 use DR\Ipp\Ipp;
+use DR\Ipp\Operations\CancelJobOperation;
 use DR\Ipp\Operations\GetJobAttributesOperation;
 use DR\Ipp\Operations\GetJobsOperation;
 use DR\Ipp\Operations\GetPrinterAttributesOperation;
@@ -59,8 +60,8 @@ class IppTest extends TestCase
         $mock = $this->createMock(GetJobAttributesOperation::class);
         $this->setPrivateProperty($this->ipp, 'getJobAttributes', $mock);
 
-        $mock->expects($this->once())->method('getJob')->with($job->getUri());
-        $this->ipp->getJobAttributes($job->getUri());
+        $mock->expects($this->once())->method('getJob')->with($job);
+        $this->ipp->getJobAttributes($job);
     }
 
     /**
@@ -98,6 +99,18 @@ class IppTest extends TestCase
 
         $mock->expects($this->once())->method('getJobList')->with($printer);
         $this->ipp->getJobs($printer);
+    }
+
+    public function testCancelJob(): void
+    {
+        $job = new IppJob();
+        $job->setUri('my-uri');
+
+        $mock = $this->createMock(CancelJobOperation::class);
+        $this->setPrivateProperty($this->ipp, 'cancelJob', $mock);
+
+        $mock->expects($this->once())->method('cancel')->with($job);
+        $this->ipp->cancelJob($job);
     }
 
     /**

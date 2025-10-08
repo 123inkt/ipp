@@ -17,7 +17,7 @@ use Psr\Http\Client\ClientExceptionInterface;
 /**
  * @internal
  */
-class GetJobAttributesOperation
+class CancelJobOperation
 {
     public function __construct(private readonly IppHttpClientInterface $client, private readonly ResponseParserFactoryInterface $parserFactory)
     {
@@ -26,15 +26,13 @@ class GetJobAttributesOperation
     /**
      * @throws ClientExceptionInterface
      */
-    public function getJob(IppJob $job): IppResponseInterface
+    public function cancel(IppJob $job): IppResponseInterface
     {
-        $operation = new IppOperation(IppOperationEnum::GetJobAttributes);
+        $operation = new IppOperation(IppOperationEnum::CancelJob);
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Charset, 'attributes-charset', 'utf-8'));
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::NaturalLanguage, 'attributes-natural-language', 'en'));
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Uri, 'job-uri', $job->getUri()));
-        $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Keyword, 'which-jobs', 'all'));
-        $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Keyword, 'requested-attributes', 'all'));
 
-        return $this->parserFactory->jobResponseParser()->getResponse($this->client->sendRequest($operation));
+        return $this->parserFactory->responseParser()->getResponse($this->client->sendRequest($operation));
     }
 }

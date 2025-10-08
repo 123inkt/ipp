@@ -6,13 +6,14 @@ namespace DR\Ipp\Entity;
 
 use DateTimeInterface;
 use DR\Ipp\Enum\JobStateEnum;
+use DR\Ipp\Enum\JobStateReasonEnum;
 
 class IppJob
 {
     private int $id;
     private string $uri;
     private JobStateEnum $jobState;
-    private ?string $jobStateReason;
+    private JobStateReasonEnum $jobStateReason;
     private ?string $userName;
     private ?int $fileSize;
     private ?int $numberOfDocuments;
@@ -45,12 +46,12 @@ class IppJob
         return $this;
     }
 
-    public function getJobStateReason(): ?string
+    public function getJobStateReason(): JobStateReasonEnum
     {
         return $this->jobStateReason;
     }
 
-    public function setJobStateReason(?string $jobStateReason): self
+    public function setJobStateReason(JobStateReasonEnum $jobStateReason): self
     {
         $this->jobStateReason = $jobStateReason;
 
