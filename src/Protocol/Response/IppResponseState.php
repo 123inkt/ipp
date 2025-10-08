@@ -7,6 +7,9 @@ namespace DR\Ipp\Protocol\Response;
 use DateTime;
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Protocol\IppResolution;
+use DR\Utils\Assert;
+use Nyholm\Psr7\Stream;
+use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
 /**
@@ -14,13 +17,21 @@ use RuntimeException;
  */
 class IppResponseState
 {
-    public function __construct(private string $response)
+    private StreamInterface $stream;
+
+    public function __construct(string $response)
     {
+        $this->stream = new Stream(Assert::notFalse(fopen('php://temp', 'rb+')));
+        $this->stream->write($response);
+        $this->stream->rewind();
     }
 
     public function getNextByte(): int
     {
-        return (int)$this->unpackSingleValue('c');
+        $nextByte = (int)$this->unpackSingleValue('c', 1);
+        $this->stream->seek(-1, SEEK_CUR);
+
+        return $nextByte;
     }
 
     /**
@@ -45,10 +56,7 @@ class IppResponseState
      */
     private function consumeBytes(string $unpack, int $byteCount): int|string|array
     {
-        $data           = str_contains($unpack, '/') ? $this->unpackArray($unpack) : $this->unpackSingleValue($unpack);
-        $this->response = substr($this->response, $byteCount);
-
-        return $data;
+        return str_contains($unpack, '/') ? $this->unpackArray($unpack, $byteCount) : $this->unpackSingleValue($unpack, $byteCount);
     }
 
     private function consumeDateTime(int $length): DateTime
@@ -91,9 +99,9 @@ class IppResponseState
     /**
      * @return array<int|string, mixed>
      */
-    private function unpackArray(string $unpack): array
+    private function unpackArray(string $unpack, int $byteCount): array
     {
-        $data = @unpack($unpack, $this->response);
+        $data = @unpack($unpack, $this->stream->read($byteCount));
         if ($data === false) {
             throw new RuntimeException('Failed to parse IPP array data');
         }
@@ -101,9 +109,9 @@ class IppResponseState
         return $data;
     }
 
-    private function unpackSingleValue(string $unpack): string|int
+    private function unpackSingleValue(string $unpack, int $byteCount): string|int
     {
-        $data = @unpack($unpack, $this->response);
+        $data = @unpack($unpack, $this->stream->read($byteCount));
         if ($data === false || isset($data[1]) === false || (is_string($data[1]) === false && is_int($data[1]) === false)) {
             throw new RuntimeException('Failed to parse IPP data');
         }

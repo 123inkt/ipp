@@ -47,7 +47,7 @@ class IppResponseParser implements IppResponseParserInterface
         /** @var int $status */
         $status = $state->consume(2, IppTypeEnum::Int);  // status    0x0502
         $state->consume(4, IppTypeEnum::Int);            // requestId 0x00000001
-        $state->consume(1, IppTypeEnum::Int);            // IPPOperationTag::OPERATION_ATTRIBUTE_START
+        $state->consume(1, null);                        // IppOperationTagEnum::OPERATION_ATTRIBUTE_START
 
         return IppStatusCodeEnum::tryFrom($status) ?? IppStatusCodeEnum::Unknown;
     }
