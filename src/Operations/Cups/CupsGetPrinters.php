@@ -32,10 +32,9 @@ class CupsGetPrinters implements LoggerAwareInterface, GetPrintersInterface
      */
     public function get(): IppResponseInterface
     {
-        $operation = new IppOperation(IppOperationEnum::CupsGetPpds);
+        $operation = new IppOperation(IppOperationEnum::CupsGetPrinters);
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Charset, 'attributes-charset', 'utf-8'));
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::NaturalLanguage, 'attributes-natural-language', 'en'));
-        $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Keyword, 'requested-attributes', 'ppd-name'));
 
         return $this->parserFactory->printerResponseParser()->getResponse($this->client->sendRequest($operation));
     }
