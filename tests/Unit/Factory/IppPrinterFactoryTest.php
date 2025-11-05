@@ -55,6 +55,6 @@ class IppPrinterFactoryTest extends TestCase
         static::assertSame('baz', $printer->getPrinterType());
         static::assertSame([AuthenticationSupportEnum::None], $printer->getUriAuthSupported());
         static::assertSame([PrintQualityEnum::Normal, PrintQualityEnum::High], $printer->getPrintQualitiesSupported());
-        static::assertSame((new DateTimeImmutable('@0'))->getTimeStamp(), $printer->getUpSince()->getTimeStamp());
+        static::assertSame((new DateTimeImmutable('@0'))->getTimeStamp(), $printer->getUpSince()?->getTimeStamp());
     }
 }
