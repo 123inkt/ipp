@@ -37,11 +37,11 @@ class PrintOperation implements LoggerAwareInterface
     /**
      * @throws ClientExceptionInterface
      */
-    public function print(IppPrinter $printer, IppPrintFile $file): IppResponseInterface
+    public function print(IppPrinter $printer, IppPrintFile $file, bool $dryRun = false): IppResponseInterface
     {
         $printerUri = $this->server->getUri() . '/printers/' . $printer->getHostname();
 
-        $operation = new IppOperation(IppOperationEnum::PrintJob);
+        $operation = new IppOperation($dryRun ? IppOperationEnum::ValidateJob : IppOperationEnum::PrintJob);
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Charset, 'attributes-charset', 'utf-8'));
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::NaturalLanguage, 'attributes-natural-language', 'en'));
         $operation->addOperationAttribute(new IppAttribute(IppTypeEnum::Uri, 'printer-uri', $printerUri));

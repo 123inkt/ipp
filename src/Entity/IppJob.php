@@ -12,15 +12,21 @@ class IppJob
 {
     private int $id;
     private string $uri;
+    private ?string $name = null;
     private JobStateEnum $jobState;
     private JobStateReasonEnum $jobStateReason;
-    private ?string $userName;
-    private ?int $fileSize;
-    private ?int $numberOfDocuments;
-    private ?int $copies;
-    private ?DateTimeInterface $creationDate;
-    private ?DateTimeInterface $completionDate;
-    private ?string $documentFormat;
+    private ?string $userName = null;
+    private ?int $fileSize = null;
+    private ?int $numberOfDocuments = null;
+    private ?int $copies = null;
+    private ?DateTimeInterface $creationDate = null;
+    private ?DateTimeInterface $processingDate = null;
+    private ?DateTimeInterface $completionDate = null;
+    private ?string $documentFormat = null;
+    private ?string $documentName = null;
+    private ?string $printerUri = null;
+    private ?DateTimeInterface $printerUpSince = null;
+    private ?int $priority = null;
 
     public function getId(): int
     {
@@ -42,6 +48,18 @@ class IppJob
     public function setUri(string $uri): self
     {
         $this->uri = $uri;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }
@@ -130,6 +148,18 @@ class IppJob
         return $this;
     }
 
+    public function getProcessingDate(): ?DateTimeInterface
+    {
+        return $this->processingDate;
+    }
+
+    public function setProcessingDate(?DateTimeInterface $processingDate): self
+    {
+        $this->processingDate = $processingDate;
+
+        return $this;
+    }
+
     public function getCompletionDate(): ?DateTimeInterface
     {
         return $this->completionDate;
@@ -150,6 +180,54 @@ class IppJob
     public function setDocumentFormat(?string $documentFormat): self
     {
         $this->documentFormat = $documentFormat;
+
+        return $this;
+    }
+
+    public function getDocumentName(): ?string
+    {
+        return $this->documentName;
+    }
+
+    public function setDocumentName(?string $documentName): self
+    {
+        $this->documentName = $documentName;
+
+        return $this;
+    }
+
+    public function getPrinterUpSince(): ?DateTimeInterface
+    {
+        return $this->printerUpSince;
+    }
+
+    public function setPrinterUpSince(?DateTimeInterface $printerUpTime): self
+    {
+        $this->printerUpSince = $printerUpTime;
+
+        return $this;
+    }
+
+    public function getPrinterUri(): ?string
+    {
+        return $this->printerUri;
+    }
+
+    public function setPrinterUri(?string $setPrinterUri): self
+    {
+        $this->printerUri = $setPrinterUri;
+
+        return $this;
+    }
+
+    public function getPriority(): ?int
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(?int $priority): self
+    {
+        $this->priority = $priority;
 
         return $this;
     }

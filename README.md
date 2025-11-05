@@ -36,6 +36,12 @@ composer require digitalrevolution/ipp
     $ipp->print($printer, $ippFile);
 ```
 
+### Print job validation
+If you want to test if a print operation should work, without actually printing anything, you can use the validatePrintJob operation instead.
+```php
+    $ipp->validatePrintJob($printer, $ippFile);
+```
+
 ### Fetch job attributes
 
 ```php
