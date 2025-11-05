@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<phpmd-baseline>
+  <violation rule="PHPMD\Rule\Design\TooManyFields" file="src/Entity/IppJob.php"/>
+  <violation rule="PHPMD\Rule\Design\TooManyFields" file="src/Entity/IppPrinter.php"/>
+  <violation rule="PHPMD\Rule\Design\NpathComplexity" file="src/Factory/IppJobFactory.php" method="create"/>
+  <violation rule="PHPMD\Rule\Design\NpathComplexity" file="src/Factory/IppPrinterFactory.php" method="create"/>
+</phpmd-baseline>
