@@ -113,6 +113,18 @@ class IppTest extends TestCase
         $this->ipp->cancelJob($job);
     }
 
+    public function testValidatePrintJob(): void
+    {
+        $printer = $this->createMock(IppPrinter::class);
+        $file    = $this->createMock(IppPrintFile::class);
+
+        $mock = $this->createMock(PrintOperation::class);
+        $this->setPrivateProperty($this->ipp, 'printOperation', $mock);
+
+        $mock->expects($this->once())->method('print')->with($printer, $file, true);
+        $this->ipp->validatePrintJob($printer, $file);
+    }
+
     /**
      * @param class-string|object $obj
      *
