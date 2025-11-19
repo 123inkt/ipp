@@ -37,7 +37,7 @@ composer require digitalrevolution/ipp
 ```
 
 ### Print job validation
-If you want to test if a print operation should work, without actually printing anything, you can use the validatePrintJob operation instead.
+To test a print operation without actually printing anything, you can use the `validatePrintJob` operation instead.
 ```php
     $ipp->validatePrintJob($printer, $ippFile);
 ```
