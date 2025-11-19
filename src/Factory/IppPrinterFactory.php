@@ -59,12 +59,12 @@ class IppPrinterFactory
         $printer->setAcceptingJobs($acceptingJobs === null ? null : Assert::boolean($acceptingJobs));
         $printer->setQueuedJobsCount($queuedJobsCount === null ? null : Assert::integer($queuedJobsCount));
         $printer->setPrinterUri($printerUri === null ? null : Assert::string($printerUri));
-        $printer->setUpSince($upTime === null ? null : new DateTimeImmutable('@' . Assert::integer($upTime)));
+        $printer->setUpSince($upTime === null ? null : (new DateTimeImmutable())->setTimeStamp(Assert::integer($upTime)));
         $printer->setFileSizeLimit($fileSizeLimit > 0 ? Assert::integer($fileSizeLimit) : null);
         $printer->setPageLimit($pageLimit > 0 ? Assert::integer($pageLimit) : null);
         $printer->setSupportedMedia($mediaSupported === null ? [] : Assert::isArray($mediaSupported));
         $printer->setDefaultMedia($defaultMedia === null ? null : Assert::string($defaultMedia));
-        $printer->setDefaultQuality($defaultPrintQuality === null ? null : PrintQualityEnum::tryFrom(Assert::integer($defaultPrintQuality)));
+        $printer->setDefaultQuality($defaultPrintQuality === null ? null : PrintQualityEnum::tryFrom(Assert::nonNegativeInt($defaultPrintQuality)));
         $printer->setPrintQualitiesSupported($printQualitiesSupported);
 
         return $printer;

@@ -57,7 +57,7 @@ class IppJobFactory
         $job->setDocumentFormat($documentFormat === null ? null : Assert::string($documentFormat));
         $job->setDocumentName($documentName === null ? null : Assert::string($documentName));
         $job->setPrinterUri($printerUri === null ? null : Assert::string($printerUri));
-        $job->setPrinterUpSince($printerUptime === null ? null : new DateTimeImmutable('@' . Assert::nonNegativeInt($printerUptime)));
+        $job->setPrinterUpSince($printerUptime === null ? null : (new DateTimeImmutable())->setTimeStamp(Assert::nonNegativeInt($printerUptime)));
         $job->setPriority($priority === null ? null : Assert::integer($priority));
 
         return $job;

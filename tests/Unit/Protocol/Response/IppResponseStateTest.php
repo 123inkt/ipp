@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit\Protocol\Response;
 
-use DateTime;
+use DateTimeImmutable;
 use DR\Ipp\Entity\IppResolution;
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Protocol\Response\IppResponseState;
@@ -50,7 +50,7 @@ class IppResponseStateTest extends TestCase
 
     public function testConsumeDate(): void
     {
-        $expected = new DateTime('1990-02-03T14:01:02.000000+0100');
+        $expected = new DateTimeImmutable('1990-02-03T14:01:02.000000+0100');
 
         $state = new IppResponseState(pack('nc6ac2', 1990, 2, 3, 14, 01, 02, 0, '+', 1, 0));
         static::assertEquals($expected, $state->consume(11, IppTypeEnum::DateTime));

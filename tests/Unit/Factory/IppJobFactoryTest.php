@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Tests\Unit\Factory;
 
-use DateTime;
+use DateTimeImmutable;
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Ipp\Enum\JobStateEnum;
 use DR\Ipp\Enum\JobStateReasonEnum;
@@ -41,7 +41,7 @@ class IppJobFactoryTest extends TestCase
 
     public function testCreate(): void
     {
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
 
         $attributes                              = [];
         $attributes['job-id']                    = new IppAttribute(IppTypeEnum::Int, 'job-id', 1);
