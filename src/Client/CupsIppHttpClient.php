@@ -14,8 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class CupsIppHttpClient implements IppHttpClientInterface
 {
-    private const int HTTP_STATUS_UNAUTHORIZED = 401;
-    private const int HTTP_STATUS_SERVER_ERROR = 500;
+    private const int HTTP_STATUS_BAD_REQUEST = 400;
 
     public function __construct(private readonly IppServer $server, private readonly ClientInterface $client)
     {
@@ -42,7 +41,7 @@ class CupsIppHttpClient implements IppHttpClientInterface
         $response = $this->client->sendRequest($request);
 
         // a server error won't be an ipp response we can parse.
-        if ($response->getStatusCode() === self::HTTP_STATUS_UNAUTHORIZED || $response->getStatusCode() >= self::HTTP_STATUS_SERVER_ERROR) {
+        if ($response->getStatusCode() >= self::HTTP_STATUS_BAD_REQUEST) {
             throw new IppRequestException($request, $response);
         }
 

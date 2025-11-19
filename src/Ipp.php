@@ -115,4 +115,14 @@ class Ipp implements LoggerAwareInterface
 
         return $this->cancelJob->cancel($job);
     }
+
+    /**
+     * @throws ClientExceptionInterface
+     */
+    public function validatePrintJob(IppPrinter $printer, IppPrintFile $file): IppResponseInterface
+    {
+        $this->printOperation ??= $this->printOperationFactory->create($this->server, $this->httpClient, $this->parserFactory, $this->logger);
+
+        return $this->printOperation->print($printer, $file, true);
+    }
 }

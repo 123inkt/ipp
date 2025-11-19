@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DR\Ipp\Protocol\Response;
 
-use DateTime;
+use DateTimeImmutable;
 use DR\Ipp\Entity\IppResolution;
 use DR\Ipp\Enum\IppTypeEnum;
 use DR\Utils\Assert;
@@ -63,7 +63,7 @@ class IppResponseState
         return str_contains($unpack, '/') ? $this->unpackArray($unpack, $byteCount) : $this->unpackSingleValue($unpack, $byteCount);
     }
 
-    private function consumeDateTime(int $length): DateTime
+    private function consumeDateTime(int $length): DateTimeImmutable
     {
         // Datetime in rfc2579 format: https://datatracker.ietf.org/doc/html/rfc2579
         /** @var array{year: int, month: int, day: int, hour: int, min: int, sec: int, int, tz: string, tzhour:int, tzmin: int} $dateTime */
@@ -73,7 +73,7 @@ class IppResponseState
         $time     = $dateTime['hour'] . ':' . sprintf('%02d', $dateTime['min']) . ':' . sprintf('%02d', $dateTime['sec']);
         $timeZone = $dateTime['tz'] . sprintf('%02d', $dateTime['tzhour']) . sprintf('%02d', $dateTime['tzmin']);
 
-        $converted = DateTime::createFromFormat('Y-n-j G:i:sO', $date . ' ' . $time . $timeZone);
+        $converted = DateTimeImmutable::createFromFormat('Y-n-j G:i:sO', $date . ' ' . $time . $timeZone);
         if ($converted === false) {
             throw new RuntimeException('Invalid DateTime in IPP attribute');
         }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpcs-baseline version="4.0.0">
+<violation file="src/Factory/IppJobFactory.php" sniff="SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh" signature="f331be3bcc865734cb225efffb01022d16b72339"/>
+<violation file="src/Factory/IppPrinterFactory.php" sniff="SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh" signature="26390268ae58e9656b8ba15b681fd37d2a51e34e"/>
+</phpcs-baseline>
+
