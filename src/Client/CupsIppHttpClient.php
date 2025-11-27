@@ -23,7 +23,7 @@ class CupsIppHttpClient implements IppHttpClientInterface
     /**
      * @param IppOperation $operation
      *
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function sendRequest(IppOperation $operation): ResponseInterface
     {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DR\Ipp\Operations;
 
 use DR\Ipp\Client\IppHttpClientInterface;
+use DR\Ipp\Client\IppRequestException;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
 use DR\Ipp\Entity\IppServer;
@@ -35,7 +36,7 @@ class PrintOperation implements LoggerAwareInterface
     }
 
     /**
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function print(IppPrinter $printer, IppPrintFile $file, bool $dryRun = false): IppResponseInterface
     {

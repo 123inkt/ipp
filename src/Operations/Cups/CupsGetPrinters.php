@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DR\Ipp\Operations\Cups;
 
 use DR\Ipp\Client\IppHttpClientInterface;
+use DR\Ipp\Client\IppRequestException;
 use DR\Ipp\Entity\Response\IppResponseInterface;
 use DR\Ipp\Enum\IppOperationEnum;
 use DR\Ipp\Enum\IppTypeEnum;
@@ -28,7 +29,7 @@ class CupsGetPrinters implements LoggerAwareInterface, GetPrintersInterface
     }
 
     /**
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function get(): IppResponseInterface
     {
