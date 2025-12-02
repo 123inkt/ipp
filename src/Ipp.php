@@ -6,6 +6,7 @@ namespace DR\Ipp;
 
 use DR\Ipp\Client\CupsIppHttpClient;
 use DR\Ipp\Client\IppHttpClientInterface;
+use DR\Ipp\Client\IppRequestException;
 use DR\Ipp\Entity\IppJob;
 use DR\Ipp\Entity\IppPrinter;
 use DR\Ipp\Entity\IppPrintFile;
@@ -66,7 +67,7 @@ class Ipp implements LoggerAwareInterface
     }
 
     /**
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function print(IppPrinter $printer, IppPrintFile $file): IppResponseInterface
     {
@@ -76,7 +77,7 @@ class Ipp implements LoggerAwareInterface
     }
 
     /**
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function getJobAttributes(IppJob $job): IppResponseInterface
     {
@@ -87,7 +88,7 @@ class Ipp implements LoggerAwareInterface
 
     /**
      * Requests a list of printer attributes for the specified printer
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function getPrinterAttributes(IppPrinter $printer): IppResponseInterface
     {
@@ -97,7 +98,7 @@ class Ipp implements LoggerAwareInterface
     }
 
     /**
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function getJobs(IppPrinter $printer, bool $completed = false): IppResponseInterface
     {
@@ -107,7 +108,7 @@ class Ipp implements LoggerAwareInterface
     }
 
     /**
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function cancelJob(IppJob $job): IppResponseInterface
     {
@@ -117,7 +118,7 @@ class Ipp implements LoggerAwareInterface
     }
 
     /**
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function validatePrintJob(IppPrinter $printer, IppPrintFile $file): IppResponseInterface
     {

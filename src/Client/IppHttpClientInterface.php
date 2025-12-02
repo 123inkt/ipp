@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 interface IppHttpClientInterface
 {
     /**
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|IppRequestException
      */
     public function sendRequest(IppOperation $operation): ResponseInterface;
 }
