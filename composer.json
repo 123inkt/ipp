@@ -29,7 +29,7 @@
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^2.0.0",
         "phpstan/phpstan-phpunit": "^2.0.0",
-        "phpunit/phpunit": "^12.0",
+        "phpunit/phpunit": "^13.0",
         "roave/security-advisories": "dev-latest",
         "slevomat/coding-standard": "^8.16",
         "squizlabs/php_codesniffer": "^4.0"
